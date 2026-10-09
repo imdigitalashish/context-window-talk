@@ -318,19 +318,34 @@
    "result": {
     "clauses": [
      {
-      "text": "why is he not replying to my texts, should I text him again?",
+      "text": "why is he not replying to my texts",
       "part": "interpersonal",
-      "sim": 0.2372,
+      "sim": 0.2197,
       "xyz": [
-       0.2704,
-       0.765,
-       0.3013
+       0.2936,
+       0.7484,
+       0.3282
       ],
       "xy": [
-       0.2704,
-       0.765
+       0.2936,
+       0.7484
       ],
       "touched": true
+     },
+     {
+      "text": "should I text him again?",
+      "part": "interpersonal",
+      "sim": 0.1949,
+      "xyz": [
+       0.2091,
+       0.826,
+       0.2686
+      ],
+      "xy": [
+       0.2091,
+       0.826
+      ],
+      "touched": false
      }
     ],
     "partsTouched": [

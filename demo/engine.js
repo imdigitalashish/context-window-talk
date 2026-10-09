@@ -69,7 +69,7 @@ export function getMap() {
   return map;
 }
 
-/** Splits a prompt into clauses. See docs/demo-spec.md for the rules. */
+/** Splits a prompt into clauses. Rules: the "Clause splitting" notes below and docs/demo-spec.md. */
 export function splitClauses(prompt) {
   if (typeof prompt !== 'string') return [];
   const text = prompt.replace(/\r\n?/g, '\n').replace(/[\u2018\u2019\u02BC]/g, "'");
@@ -79,8 +79,8 @@ export function splitClauses(prompt) {
     if (!line) continue;
     for (const sentence of splitSentences(line)) {
       for (const piece of sentence.split(';')) {
-        for (const clause of splitImperatives(piece)) {
-          const c = clause.trim().replace(LEADING_CONNECTOR, '').replace(TRAILING_PUNCT, '').trim();
+        for (const clause of splitAtConnectors(piece)) {
+          const c = clause.trim().replace(LEADING_FILLER, '').replace(TRAILING_PUNCT, '').trim();
           if (c.length >= 3) clauses.push(c);
         }
       }
@@ -132,9 +132,23 @@ export async function score(prompt) {
 
 // ---------------------------------------------------------------------------
 // Clause splitting
+//
+// A prompt splits on line breaks, bullets, sentence ends and ';'. Inside each piece, a connector
+// (',', 'and', '&', 'also', 'plus', 'then', 'but', 'as well as', or a run like ', and also') starts a
+// new clause when one of these holds:
+//   1. the next words start an ask: an imperative verb or a negation ("..., add Google login",
+//      "and don't use React");
+//   2. they start a question or a statement: a question word, an auxiliary, or a pronoun subject or
+//      possessive ("and why isn't she texting me", ", should I text him again", "and my website");
+//   3. the connector contains "also", which signals a topic switch;
+//   4. an and-type connector (and, &, plus, as well as) joins two noun phrases of two or more words
+//      each ("ai model and website for it"). Pairs stay together: "Postgres and Redis",
+//      "React and Redux".
+// Fixed pairs never split ("drag and drop", "find and replace", "read and write access"), and a split
+// never leaves a side without a content word, so "It should also support X" stays whole.
 
 const BULLET = /^\s*(?:[-*\u2022\u00B7\u2013\u2014>]+|\d{1,2}[.)]|[a-zA-Z][)])\s+/;
-const LEADING_CONNECTOR = /^(?:(?:and|also|plus|then|but)\b[\s,]*)+/i;
+const LEADING_FILLER = /^(?:(?:(?:and|also|plus|then|but|please|pls|plz|as\s+well\s+as)\b|&)[\s,]*)+/i;
 const TRAILING_PUNCT = /[\s,;:.!\u2026]+$/;
 const ABBREVIATIONS = /\b(e\.g|i\.e|etc|vs|approx|mr|mrs|ms|dr|st|no|fig)\.(?=\s)/gi;
 const DOT = '\u0000';
@@ -144,12 +158,11 @@ function splitSentences(line) {
   return protectedLine.split(/(?<=[.!?])\s+(?=\S)/).map((s) => s.replaceAll(DOT, '.'));
 }
 
-// Connectors that may separate two imperative clauses: ", " / ", and " / " and " / " also " / " plus " / " then ".
-const CONNECTOR = /\s*,\s*(?:(?:and|also|plus|then)\s+)*|\s+(?:(?:and|also|plus|then)\s+)+/gi;
+const CONNECTOR_WORD = String.raw`(?:(?:and|also|plus|then|but|as\s+well\s+as)\b|&)`;
+const CONNECTOR = new RegExp(String.raw`\s*,\s*(?:${CONNECTOR_WORD}\s*)*|\s+(?:${CONNECTOR_WORD}\s+)+`, 'gi');
+const AND_LIKE = /\band\b|&|\bplus\b|\bas\s+well\s+as\b/i;
 
-// Verbs that start an imperative clause in a coding-agent prompt. A connector only splits when the
-// next clause starts with one of these (or with a negation), so "Postgres and Redis" stays together
-// and "Don't use React" keeps its negation.
+// Rule 1: verbs that start an imperative clause in a coding-agent (or 3 AM) prompt.
 const VERBS = new Set(`add allow append avoid build bump call change check clean cleanup compute configure connect
 convert copy create debug delete deploy design document download drop email enable disable ensure explain export
 extract fetch find fix format generate give handle hide host implement import improve include install integrate
@@ -161,26 +174,92 @@ update upgrade upload use validate verify wire wrap write ask tell text cook bak
 email message`.split(/\s+/));
 const NEGATION = /^(?:don't|dont|do not|never|no need to|avoid|stop)\b/i;
 
-function startsImperative(rest) {
-  const s = rest.trim().replace(/^please\s+/i, '');
-  if (NEGATION.test(s)) return true;
-  const word = s.match(/^[a-z]+/i)?.[0]?.toLowerCase();
-  return !!word && VERBS.has(word);
-}
+// Rule 2: words that open a question or a statement rather than continue a noun phrase.
+const CLAUSE_OPENERS = new Set(`why what how when where who whom whose which
+is are am was were can could should would will shall may might must do does did has have had
+isn't aren't wasn't weren't can't cannot couldn't shouldn't wouldn't won't doesn't didn't hasn't haven't hadn't
+mustn't isnt arent wasnt werent cant couldnt shouldnt wouldnt wont doesnt didnt hasnt havent hadnt
+what's how's why's where's who's when's whats hows wheres whos
+i i'm i've i'd i'll im ive you you're we we're we've they they're they've he he's she she's it it's
+my your our their his her its`.split(/\s+/));
 
-function splitImperatives(piece) {
+const DETERMINERS = new Set('a an the this that these those some any each every another my your our their his her its'.split(' '));
+
+// Words with no topic of their own: a side made only of these is not a clause, and a noun phrase
+// ends where one of these begins.
+const FUNCTION_WORDS = new Set([...CLAUSE_OPENERS, ...DETERMINERS, ...`me us him them mine yours ours theirs myself
+and or but also plus then so if than as nor yet to of for in on at by with from about into onto over under up out
+off down via per like between through not no just really very too again now there here please pls plz
+ok okay hi hey hello thanks thank yes yeah`.split(/\s+/)]);
+
+// Fixed pairs, kept whole even when the second word is a verb ("drop", "replace", "write").
+const PAIRS = new Set(['drag drop', 'copy paste', 'cut paste', 'pros cons', 'terms conditions', 'find replace',
+  'search replace', 'read write', 'black white', 'back forth', 'trial error', 'salt pepper', 'rock roll', 'plug play']);
+
+const PUNCT = /^[,:()]$/;
+const words = (s) => (s.toLowerCase().match(/[a-z0-9][a-z0-9'+#./-]*|[,:()]/g) ?? [])
+  .map((w) => (PUNCT.test(w) ? w : w.replace(/[.'/-]+$/, '')));
+const hasContent = (s) => words(s).some((w) => !PUNCT.test(w) && !FUNCTION_WORDS.has(w));
+
+function splitAtConnectors(piece) {
+  const connectors = [...piece.matchAll(CONNECTOR)].filter((m) => m.index > 0);
   const out = [];
   let start = 0;
-  for (const m of piece.matchAll(CONNECTOR)) {
-    if (m.index === 0 || !m[0]) continue;
-    const next = m.index + m[0].length;
-    if (startsImperative(piece.slice(next))) {
-      out.push(piece.slice(start, m.index));
-      start = next;
+  connectors.forEach((m, i) => {
+    const end = m.index + m[0].length;
+    const left = piece.slice(start, m.index);
+    const rest = piece.slice(end);
+    if (!hasContent(left) || !hasContent(rest)) return;
+    const lastLeft = words(left).filter((w) => !PUNCT.test(w)).at(-1);
+    const firstRest = words(rest).filter((w) => !PUNCT.test(w))[0];
+    if (PAIRS.has(`${lastLeft} ${firstRest}`)) return;
+    const right = piece.slice(end, connectors[i + 1]?.index ?? piece.length);
+    const split = startsAsk(rest)
+      || /\balso\b/i.test(m[0])
+      || (AND_LIKE.test(m[0]) && !/\bbut\b/i.test(m[0]) && joinsNounPhrases(left, right));
+    if (split) {
+      out.push(left);
+      start = end;
     }
-  }
+  });
   out.push(piece.slice(start));
   return out;
+}
+
+// Rules 1 and 2: the words after a connector start an ask, a question or a statement.
+function startsAsk(rest) {
+  const s = rest.trim().replace(/^(?:please|pls|plz)\b[\s,]*/i, '');
+  if (NEGATION.test(s)) return true;
+  const word = s.match(/^[a-z]+(?:'[a-z]+)?/i)?.[0]?.toLowerCase();
+  return !!word && (VERBS.has(word.split("'")[0]) || CLAUSE_OPENERS.has(word));
+}
+
+// Rule 4: "<noun phrase> and <noun phrase>", both at least two words long.
+function joinsNounPhrases(left, right) {
+  const after = words(right).filter((w) => !PUNCT.test(w));
+  const before = tailPhrase(left, DETERMINERS.has(after[0]));
+  return before.length >= 2 && after.length >= 2;
+}
+
+// The noun phrase that ends `left`: words back to a function word, punctuation or the clause's
+// opening verb ("create me ai model" -> "ai model", "Set up Postgres" -> "Postgres"). Its determiner
+// counts only when the right side starts with one too ("a website and a mobile app"), so that
+// "a drag and drop uploader" and "the Postgres and Redis containers" stay whole.
+function tailPhrase(left, parallel) {
+  const tokens = words(left);
+  let first = 0;
+  while (first < tokens.length && FUNCTION_WORDS.has(tokens[first])) first++;
+  const phrase = [];
+  for (let i = tokens.length - 1; i >= 0; i--) {
+    const t = tokens[i];
+    if (DETERMINERS.has(t)) {
+      if (parallel) phrase.unshift(t);
+      break;
+    }
+    if (PUNCT.test(t) || FUNCTION_WORDS.has(t) || (i === first && VERBS.has(t))) break;
+    phrase.unshift(t);
+  }
+  return phrase;
 }
 
 // ---------------------------------------------------------------------------

@@ -144,13 +144,13 @@ Run `./serve.sh`, then open http://localhost:8000/demo/. The model files need ht
 
 ## Calibration
 
-Engine-generated on 9 Oct 2026 from the shipped `demo/data/map.json`. `node demo/test-engine.mjs` re-checks all of this and exits non-zero on any failure (Node 18.20 and 25; Chrome gives identical numbers).
+Engine-generated on 9 Oct 2026 from the shipped `demo/data/map.json`, and updated after the clause-splitting fix for messy, typed-live prompts. `node demo/test-engine.mjs` re-checks all of this and exits non-zero on any failure (Node 18.20 and 25; Chrome gives identical numbers).
 
 **Thresholds** (`map.json` → `thresholds`)
 
 | Name | Value | Meaning and how it was set |
 |---|---|---|
-| `touch` | **0.21** | A clause touches its part when `sim >= 0.21`. The feasible window was (0.180, 0.237]: the 3 AM clause (0.237) must light up; chit-chat ("can you help me", 0.180) should not. The value is the midpoint. |
+| `touch` | **0.21** | A clause touches its part when `sim >= 0.21`. It was set to the midpoint of the feasible window (0.180, 0.237]: the 3 AM clause (0.237) must light up; chit-chat ("can you help me", 0.180) should not. Since the splitting fix, the 3 AM preset is two clauses, and its upper bound is the first clause at 0.220. 0.21 is unchanged and still inside the window, with a margin of 0.01; scores are deterministic. |
 | `strong` | **0.43** | A strong pull: the focused preset's Focus (0.497) clears it, the scattered preset's (0.362) doesn't. The value is their midpoint. Use it, for example, as a reference line on the "Where the whole prompt points" chart. |
 
 **Preset results** (Focus = `whole.top.sim`)
@@ -160,9 +160,21 @@ Engine-generated on 9 Oct 2026 from the shipped `demo/data/map.json`. `node demo
 | 1 | Focused | 2 | 1: auth | 0.497 (auth) | 1 part (auth) | PASS |
 | 2 | Scattered | 7 | 6: react, postgres, auth, payments, docker, css | 0.362 (react) | ≥ 5 parts, visibly lower Focus than preset 1 | PASS (0.135 lower) |
 | 3 | Negation | 2 | 1: react | 0.544 (react) | React still lights up | PASS ("Don't use React" → react, 0.767) |
-| 4 | 3 AM | 1 | 1: interpersonal | 0.237 (interpersonal) | Relationships part | PASS |
+| 4 | 3 AM | 2 | 1: interpersonal | 0.237 (interpersonal) | Relationships part | PASS (both clauses land on interpersonal) |
 
-Clause detail: preset 1 is "Add rate limiting … per minute" → auth 0.480, "return HTTP 429" → auth 0.225. Preset 2 is React frontend → react 0.652, Postgres database → postgres 0.703, Google login → auth 0.427, Stripe payments → payments 0.821, landing page copy → writing 0.203 (below `touch`), Docker → docker 0.714, look beautiful → css 0.284. Preset 3 is admin dashboard → ux 0.140 (below `touch`), "Don't use React" → react 0.767.
+Clause detail: preset 1 is "Add rate limiting … per minute" → auth 0.480, "return HTTP 429" → auth 0.225. Preset 2 is React frontend → react 0.652, Postgres database → postgres 0.703, Google login → auth 0.427, Stripe payments → payments 0.821, landing page copy → writing 0.203 (below `touch`), Docker → docker 0.714, look beautiful → css 0.284. Preset 3 is admin dashboard → ux 0.140 (below `touch`), "Don't use React" → react 0.767. Preset 4 is "why is he not replying to my texts" → interpersonal 0.220, "should I text him again?" → interpersonal 0.195 (below `touch`).
+
+**Typed live** (test-only case 5, not a UI preset): `create me ai model and website for it and also why isn't she texting me?`
+
+| Clause | Part (kNN vote) | Sim | Touched | Nearest centroids |
+|---|---|---|---|---|
+| create me ai model | writing | 0.252 | yes | ml 0.299, writing 0.252 |
+| website for it | writing | 0.097 | no | ml 0.113, writing 0.097, css 0.091, ux 0.082 |
+| why isn't she texting me? | interpersonal | 0.262 | yes | interpersonal 0.262 |
+
+The prompt now splits into 3 clauses (before the fix it was one, and only Relationships lit up). Parts touched: writing and interpersonal; Focus 0.257 (ml). The test asserts the split and interpersonal. It reports two known gaps without failing, so the threshold isn't lowered to fit:
+- **ml is not touched.** The clause's nearest centroid is ml, but the spec's kNN vote picks writing: six weak Writing.SE neighbours ("How does one write a character smarter than oneself?") outweigh the strongest one, an ml title at 0.382. "create me **an** ai model" goes to ml.
+- **No web part is touched.** "website for it" carries no topic; its best web part is css at 0.091.
 
 **Negation evidence:** cos("Use React for the UI", "Don't use React for the UI") = **0.853**. To the model the two instructions are nearly the same point.
 
@@ -174,7 +186,13 @@ Clause detail: preset 1 is "Add rate limiting … per minute" → auth 0.480, "r
 **Parts** (16 parts, 125 top-voted titles each, 2,000 points): react (SO [reactjs]), css (SO [css]), auth (SO [authentication]), postgres (SO [postgresql]), docker (SO [docker]), payments (SO [stripe-payments], payment titles only), ml (SO [machine-learning]), android (SO [android]), testing (SO [unit-testing]), ux, security, writing, law, money, interpersonal (label "Relationships"), cooking (Stack Exchange sites). `workplace` was dropped, because it competed with Relationships on 3 AM-style prompts. `writing` was added so that "write the landing page copy" has a home; without it, the clause landed on law ("copy" ≈ copyright). In the 3-D layout, 90% of the points are nearer their own part's centroid than any other.
 
 **Engine notes**
-- `splitClauses` also splits on a plain comma, but only when the next clause starts with an imperative verb or a negation ("Build X, set up Y, add Z"). Noun lists such as "Postgres and Redis" stay together. This is what splits preset 2 into its 7 asks.
+- `splitClauses`: a connector (`,` `and` `&` `also` `plus` `then` `but` `as well as`, or a run such as `, and also`) starts a new clause when:
+  1. the next words start with an imperative verb or a negation ("Build X, set up Y, add Z" gives preset 2 its 7 asks; "… but don't use React");
+  2. they start with a question word, an auxiliary (including "isn't", "can't" and the like) or a pronoun subject or possessive ("and why isn't she…", ", should I…", "and my…");
+  3. the connector contains "also";
+  4. an and-type connector joins two noun phrases of two or more words each ("ai model and website for it").
+
+  Pairs stay whole: "Postgres and Redis", "React and Redux", "the Postgres and Redis containers", "drag and drop", "find and replace". A split never leaves a side without a content word, so "It should also support dark mode" stays one clause. Leading connectors and "please" are stripped from each clause. `node demo/test-engine.mjs` checks 15 split cases.
 - `init()` loads the map first. `getMap()` returns it as soon as it has loaded, even if the model then fails, so the UI can still draw the points in its fallback state. `onProgress` reports bytes (`loaded`/`total`) per stage and returns an unsubscribe function. `score('')` returns no clauses, `whole.top.part = null` and `whole.xyz = xy = null`.
 - `demo/data/presets.results.json` has the shape `{ model, thresholds, note, results: [{ key, name, prompt, result }] }`, where `result` is the exact `score()` output.
 - Offline: the model is loaded with `allowRemoteModels = false`, local `localModelPath` and local wasm paths, and fetches are guarded so that any off-origin request is refused. The browser check (`scripts/browser-check.mjs`, headless Chrome) saw 18 requests, all to the local server.
