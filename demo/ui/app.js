@@ -116,6 +116,7 @@ function renderPresets() {
     b.addEventListener('click', () => { b.blur(); loadPreset(i); });
     presetsEl.append(b);
   });
+  promptEl.placeholder = `Type a prompt, or press ${keysLabel()}`;
   markPreset(activePreset);
 }
 
@@ -125,6 +126,7 @@ function markPreset(i) {
 }
 
 const presetIndexOf = text => presets.findIndex(p => keyOf(p.prompt) === keyOf(text));
+const keysLabel = () => (presets.length > 1 ? `1–${presets.length}` : '1');
 
 function loadPreset(i) {
   if (!presets[i]) return;
@@ -255,7 +257,7 @@ function showWhole(whole, text) {
 
 async function run(text = promptEl.value) {
   text = String(text ?? '').trim();
-  if (!text) { toast('Type a prompt, or press 1–4'); return; }
+  if (!text) { toast(`Type a prompt, or press ${keysLabel()}`); return; }
   clearResults();
   const id = runId;
   promptEl.value = text;
@@ -272,7 +274,7 @@ async function run(text = promptEl.value) {
   if (!live) {
     result = fallback?.find(text) ?? null;
     if (!result) {
-      toast(fallback ? 'The live model is offline, so only presets 1–4 work' : 'The live model is offline and the saved results are missing');
+      toast(fallback ? `The live model is offline, so only presets ${keysLabel()} work` : 'The live model is offline and the saved results are missing');
       card.dataset.view = 'input';
       return;
     }
@@ -389,7 +391,7 @@ async function goOffline(err) {
   try { fallback = await loadFallback(presets); } catch (e) { console.warn('[demo] no saved results', e); fallback = null; }
   const why = String(err?.message ?? err ?? 'unknown error').replace(/\s+/g, ' ').slice(0, 70);
   banner.textContent = fallback
-    ? `Live model didn't load (${why}). Showing saved results for presets 1–4.`
+    ? `Live model didn't load (${why}). Showing saved results for presets ${keysLabel()}.`
     : `Live model didn't load (${why}), and the saved results are missing too.`;
   banner.hidden = false;
   setPhase('error');

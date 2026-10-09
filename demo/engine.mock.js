@@ -1,6 +1,11 @@
 // Mock of demo/engine.js: the exact API from docs/demo-spec.md, with fake but plausible data.
 // 16 parts, 2,000 points in islands, keyword-driven "embeddings" with the same kNN scoring rules.
+// Clause splitting is pure text processing, so it reuses the real engine's splitClauses (no model loads).
 // Deterministic: the same prompt always gives the same result.
+
+import { splitClauses } from './engine.js';
+
+export { splitClauses };
 
 const DIMS = 384;
 const PER_PART = 125;
@@ -63,12 +68,6 @@ const KEYWORDS = [
   [/\bboss\b|\bmanager\b|\bcoworkers?\b|\bcolleagues?\b|\bjobs?\b|\boffice\b|\binterviews?\b|\bresign\w*|\bpromotion\b|\bappraisal\b/, { workplace: 1 }],
   [/\bcook\w*|\brecipes?\b|\bchicken\b|\brice\b|\bbak(e|ing)\b|\boven\b|\bcurry\b|\bspices?\b|\bdal\b|\bpaneer\b|\bbiryani\b/, { cooking: 1 }],
 ];
-
-const IMPERATIVE = new Set(('add build create make set setup write deploy integrate use implement fix return configure install design update ' +
-  'remove delete refactor test run ship host connect send show display handle generate optimize optimise improve migrate translate explain ' +
-  'give put keep allow enable store save include support do dont don\'t never avoid please style log track cache validate check ensure ' +
-  'change move rename convert paginate sort filter upload download let help tell find get call fetch compute apply prevent limit block ' +
-  'protect encrypt hash secure document review plan scale monitor notify email hook wire publish launch').split(/\s+/));
 
 const LIFE = new Set(['money', 'law', 'workplace', 'interpersonal', 'cooking']);
 // Island depth (3rd UMAP axis): tech parts and everyday-life parts sit in different layers, with spread inside each.
@@ -201,26 +200,6 @@ export async function init(opts = {}) {
 export function getMap() {
   if (!world) throw new Error('engine.mock: call init() first');
   return world.map;
-}
-
-export function splitClauses(prompt) {
-  const text = String(prompt ?? '').replace(/\r/g, '').replace(/^[ \t]*(?:[-*•·]|\d+[.)])[ \t]+/gm, '\n');
-  const out = [];
-  for (const piece of text.split(/\n+|;\s*|(?<=[.!?])\s+(?=\S)/)) {
-    const re = /(,\s*|\s+)((?:(?:and|then|also|plus)\s+)*)([a-z'’]+)/gi;
-    let m, start = 0;
-    while ((m = re.exec(piece))) {
-      const word = m[3].toLowerCase().replace(/’/g, "'");
-      const cut = (m[1].includes(',') || m[2].trim()) && IMPERATIVE.has(word);
-      const wordStart = m.index + m[1].length + m[2].length;
-      if (cut) { out.push(piece.slice(start, m.index)); start = wordStart; }
-      re.lastIndex = wordStart;
-    }
-    out.push(piece.slice(start));
-  }
-  return out
-    .map(s => s.trim().replace(/^(?:and|then|also|plus)\s+/i, '').replace(/[\s.,;:]+$/, '').trim())
-    .filter(s => s.length >= 3);
 }
 
 export async function embed(text) {

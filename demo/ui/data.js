@@ -5,6 +5,7 @@ export const BUILTIN_PRESETS = [
   { key: '2', id: 'scattered', name: 'Scattered', prompt: 'Build my React frontend, set up the Postgres database, add Google login, integrate Stripe payments, write the landing page copy, deploy it with Docker and make it look beautiful.' },
   { key: '3', id: 'negation', name: 'Negation', prompt: "Build a simple admin dashboard. Don't use React." },
   { key: '4', id: '3am', name: '3 AM', prompt: 'why is he not replying to my texts, should I text him again?' },
+  { key: '5', id: 'mixed', name: 'Mixed', prompt: "create me an ai model and a react website for it and also why isn't she texting me?" },
 ];
 
 export const keyOf = s => String(s ?? '').toLowerCase().replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
@@ -28,26 +29,26 @@ function entries(json) {
   return [];
 }
 
-const matchPreset = (list, e, i) => {
-  const want = [e.key, e.id, e.name].filter(Boolean).map(keyOf);
-  let idx = list.findIndex(p => ids(p).some(x => want.includes(x)));
-  if (idx < 0 && e.prompt) idx = list.findIndex(p => keyOf(p.prompt) === keyOf(e.prompt));
-  return idx >= 0 ? idx : i < list.length ? i : -1;
-};
-
-/** demo/presets.json (owned by the Engine session) may adjust wording while calibrating. */
+/**
+ * demo/presets.json (owned by the Engine session) is the source of truth: its order sets the keys (1–9),
+ * and it may add presets or retune wording. The built-ins are only used if it can't be loaded.
+ */
 export async function loadPresets(base = BUILTIN_PRESETS, url = 'presets.json') {
-  const list = base.map(p => ({ ...p }));
   try {
-    entries(await loadJson(url)).forEach((e, i) => {
-      const prompt = e.prompt ?? e.text;
-      const idx = typeof prompt === 'string' ? matchPreset(list, e, i) : -1;
-      if (idx >= 0) list[idx].prompt = prompt;
-    });
+    const list = entries(await loadJson(url))
+      .map((e, i) => ({ ...e, prompt: e.prompt ?? e.text }))
+      .filter(e => typeof e.prompt === 'string' && e.prompt.trim())
+      .slice(0, 9)
+      .map((e, i) => {
+        const known = base.find(p => [e.key, e.id, e.name].filter(Boolean).map(keyOf).some(x => ids(p).includes(x)));
+        return { key: String(i + 1), id: e.id ?? known?.id ?? `preset-${i + 1}`, name: e.name ?? known?.name ?? `Preset ${i + 1}`, prompt: e.prompt };
+      });
+    if (list.length) return list;
+    throw new Error(`${url}: no prompts inside`);
   } catch (err) {
     console.info('[demo] using built-in presets:', err.message);
+    return base.map(p => ({ ...p }));
   }
-  return list;
 }
 
 const isResult = o => o && typeof o === 'object' && Array.isArray(o.clauses) && o.whole && typeof o.whole === 'object';

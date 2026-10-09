@@ -87,15 +87,14 @@ button{cursor:pointer}
 @keyframes pulse{50%{opacity:.3}}
 .sub{margin-top:4px;font-size:26px;color:var(--ink-2)}
 
-.presets{display:flex;gap:4px;margin-top:16px;padding:4px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
-.presets button{flex:auto;display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 10px;border:0;
-  border-radius:9px;background:transparent;color:var(--ink-2);font-size:26px;font-weight:600;white-space:nowrap;
+.presets{display:flex;gap:3px;margin-top:16px;padding:3px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.presets button{flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:52px;padding:0 8px;border:0;
+  border-radius:9px;background:transparent;color:var(--ink-2);font-size:24px;font-weight:600;white-space:nowrap;
   transition:background-color .2s,color .2s}
 .presets button:hover{background:var(--track)}
-.presets kbd{display:inline-grid;place-items:center;min-width:30px;height:30px;padding:0 6px;border:1px solid var(--line);border-radius:6px;
-  font:600 24px/1 var(--font);color:var(--ink-3)}
+.presets kbd{font:600 24px/1 var(--font);font-variant-numeric:tabular-nums;color:var(--ink-3)}
 .presets button[aria-pressed=true]{background:var(--accent);color:var(--accent-ink)}
-.presets button[aria-pressed=true] kbd{border-color:rgba(255,255,255,.55);color:var(--accent-ink)}
+.presets button[aria-pressed=true] kbd{color:rgba(255,255,255,.75)}
 
 .card{position:relative;margin-top:16px;height:356px;padding:18px 20px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
 .card textarea{display:block;width:100%;height:100%;padding:0 0 64px;border:0;outline:0;resize:none;background:transparent;
