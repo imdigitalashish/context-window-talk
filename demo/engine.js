@@ -107,10 +107,11 @@ export async function score(prompt) {
   const clauses = [];
   for (const text of splitClauses(prompt)) {
     const q = await embed(text);
-    const { voted, xyz } = locate(q);
-    const sims = partIds.map((_, p) => dotCentroid(q, p));
-    const part = choosePart(sims, voted);
-    const sim = round(sims[part]);
+    const pointSims = similarities(q);
+    const partSims = partIds.map((_, p) => dotCentroid(q, p));
+    const part = choosePart(partSims, vote(pointSims, nearest(pointSims)));
+    const xyz = landing(pointSims, nearest(pointSims, part)); // among its own part's titles
+    const sim = round(partSims[part]);
     clauses.push({ text, part: partIds[part], sim, xyz, xy: xyz.slice(0, 2), touched: sim >= touch });
   }
   const partsTouched = [...new Set(clauses.filter((c) => c.touched).map((c) => c.part))];
@@ -125,7 +126,8 @@ export async function score(prompt) {
       whole.sims[id] = round(s);
       if (s > best) { best = s; whole.top = { part: id, sim: round(s) }; }
     });
-    whole.xyz = locate(q).xyz;
+    const pointSims = similarities(q);
+    whole.xyz = landing(pointSims, nearest(pointSims)); // across all parts: a scattered prompt lands between islands
     whole.xy = whole.xyz.slice(0, 2);
   } else {
     for (const id of partIds) whole.sims[id] = 0;
@@ -284,34 +286,51 @@ function choosePart(sims, voted) {
   return sims[best] - sims[voted] >= CENTROID_MARGIN ? best : voted;
 }
 
-// kNN over the corpus: the part index with the most similarity-weighted votes among the K nearest
-// points, and the landing spot = softmax(sim / T)-weighted mean of their 3-D positions.
-function locate(q) {
-  const n = map.points.length;
-  const topIdx = new Int32Array(K).fill(-1);
-  const topSim = new Float64Array(K).fill(-Infinity);
+// Cosine similarity of q to every corpus point.
+function similarities(q) {
+  const n = pointPart.length;
+  const sims = new Float64Array(n);
   for (let i = 0; i < n; i++) {
     let s = 0;
     const o = i * DIMS;
     for (let d = 0; d < DIMS; d++) s += q[d] * vectors[o + d];
-    if (s <= topSim[K - 1]) continue;
-    let j = K - 1;
-    while (j > 0 && topSim[j - 1] < s) { topSim[j] = topSim[j - 1]; topIdx[j] = topIdx[j - 1]; j--; }
-    topSim[j] = s; topIdx[j] = i;
+    sims[i] = s;
   }
+  return sims;
+}
 
+// Indices of the K most similar points, most similar first; only points of part index `part` if given.
+function nearest(sims, part = -1) {
+  const top = [];
+  for (let i = 0; i < sims.length; i++) {
+    if (part >= 0 && pointPart[i] !== part) continue;
+    if (top.length === K && sims[i] <= sims[top[K - 1]]) continue;
+    if (top.length === K) top.pop();
+    let j = top.length;
+    while (j > 0 && sims[top[j - 1]] < sims[i]) j--;
+    top.splice(j, 0, i);
+  }
+  return top;
+}
+
+// kNN vote: the part index with the most similarity-weighted votes among the points.
+function vote(sims, top) {
   const votes = new Float64Array(partIds.length);
-  for (let j = 0; j < K; j++) votes[pointPart[topIdx[j]]] += Math.max(topSim[j], 0);
-  let part = pointPart[topIdx[0]];
+  for (const i of top) votes[pointPart[i]] += Math.max(sims[i], 0);
+  let part = pointPart[top[0]];
   for (let p = 0; p < votes.length; p++) if (votes[p] > votes[part]) part = p;
+  return part;
+}
 
+// Landing spot: the softmax(sim / T)-weighted mean of the points' 3-D positions.
+function landing(sims, top) {
   let wsum = 0, x = 0, y = 0, z = 0;
-  for (let j = 0; j < K; j++) {
-    const w = Math.exp((topSim[j] - topSim[0]) / XYZ_TEMPERATURE);
-    const pt = map.points[topIdx[j]];
+  for (const i of top) {
+    const w = Math.exp((sims[i] - sims[top[0]]) / XYZ_TEMPERATURE);
+    const pt = map.points[i];
     wsum += w; x += w * pt.x; y += w * pt.y; z += w * (pt.z ?? 0);
   }
-  return { voted: part, xyz: [round(x / wsum), round(y / wsum), round(z / wsum)] };
+  return [round(x / wsum), round(y / wsum), round(z / wsum)];
 }
 
 const round = (v) => Math.round(v * 1e4) / 1e4;

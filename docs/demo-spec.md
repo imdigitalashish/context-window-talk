@@ -78,7 +78,7 @@ export function onProgress(cb)                    // optional: cb({ stage: 'mode
 
 - `splitClauses` splits on sentence ends, newlines, bullets, `;`, and on `, and` / ` and ` / ` also ` / ` plus ` / ` then ` between imperative clauses. Keep a negation attached to its object: "Don't use React" stays one clause. Drop empty clauses and clauses of fewer than three characters.
 - **Clause part.** Use the nearest part by kNN vote: take the 12 nearest corpus points by cosine similarity, weight each by its similarity, and pick the part with the most weight. If another part's centroid is closer to the clause than the voted part's centroid by 0.03 or more (cosine similarity), use that part instead. `sim` is the clause's cosine similarity to the chosen part's centroid. Use kNN rather than a raw centroid argmax because it is more robust. The centroid override handles the case where many weak neighbours from one part outvote a clearly closer part: for "create me ai model" the vote picks writing (0.252), but ml's centroid is closer (0.299).
-- **`xyz`.** The weighted average of the 3-D positions of the clause's 12 nearest points, with weights of softmax(sim / 0.05). All coordinates are in [0,1], the same space as `points`. `xy` is kept for compatibility and is simply the first two coordinates of `xyz`.
+- **`xyz`.** For a clause: the weighted average of the 3-D positions of the 12 nearest points **within the clause's chosen part**, with weights of softmax(sim / 0.05). Every clause lands this way, touched or not, so its dot sits in the island of the part it names. For `whole`: the same average over the 12 nearest points from any part, so a scattered prompt lands between islands. All coordinates are in [0,1], the same space as `points`. `xy` is kept for compatibility and is simply the first two coordinates of `xyz`.
 
 ## `demo/data/map.json`
 
@@ -145,7 +145,7 @@ Run `./serve.sh`, then open http://localhost:8000/demo/. The model files need ht
 
 ## Calibration
 
-Engine-generated on 9 Oct 2026 from the shipped `demo/data/map.json`, and updated after the clause-splitting fix for messy, typed-live prompts, the centroid override for clause parts, and preset 5. `node demo/test-engine.mjs` re-checks all of this and exits non-zero on any failure (Node 18.20 and 25; Chrome gives identical numbers).
+Engine-generated on 9 Oct 2026 from the shipped `demo/data/map.json`, and updated after the clause-splitting fix for messy, typed-live prompts, the centroid override for clause parts, preset 5, and landing each clause in its own part's island. `node demo/test-engine.mjs` re-checks all of this and exits non-zero on any failure (Node 18.20 and 25; Chrome gives identical numbers).
 
 **Thresholds** (`map.json` → `thresholds`)
 
@@ -187,6 +187,7 @@ Parts touched: ml and interpersonal; Focus 0.257 (ml). The test asserts this, in
 **Parts** (16 parts, 125 top-voted titles each, 2,000 points): react (SO [reactjs]), css (SO [css]), auth (SO [authentication]), postgres (SO [postgresql]), docker (SO [docker]), payments (SO [stripe-payments], payment titles only), ml (SO [machine-learning]), android (SO [android]), testing (SO [unit-testing]), ux, security, writing, law, money, interpersonal (label "Relationships"), cooking (Stack Exchange sites). `workplace` was dropped, because it competed with Relationships on 3 AM-style prompts. `writing` was added so that "write the landing page copy" has a home; without it, the clause landed on law ("copy" ≈ copyright). In the 3-D layout, 90% of the points are nearer their own part's centroid than any other.
 
 **Engine notes**
+- Landing: each clause's dot lands among its own part's 12 nearest titles, so it sits in the island that lights up. Before this change, 5 of the 16 preset clauses landed nearer another part's label: for example, "make it look beautiful" (css) landed by Writing, and "create me an ai model" (ml) by UX. The test checks that every clause lands nearest its own part's label; the farthest is "Build a simple admin dashboard" (ux) at 0.114, while a typical point sits about 0.06 from its label. The whole-prompt dot still averages across parts.
 - `splitClauses`: a connector (`,` `and` `&` `also` `plus` `then` `but` `as well as`, or a run such as `, and also`) starts a new clause when:
   1. the next words start with an imperative verb or a negation ("Build X, set up Y, add Z" gives preset 2 its 7 asks; "… but don't use React");
   2. they start with a question word, an auxiliary (including "isn't", "can't" and the like) or a pronoun subject or possessive ("and why isn't she…", ", should I…", "and my…");

@@ -105,6 +105,10 @@ function unmet(e, r) {
   return out;
 }
 
+// Where a clause's dot lands: its nearest part label (labels sit at each part's x, y, z).
+const labelDist = (xyz, p) => Math.hypot(xyz[0] - p.x, xyz[1] - p.y, xyz[2] - p.z);
+const nearestLabel = (xyz) => map.parts.reduce((a, b) => (labelDist(xyz, a) <= labelDist(xyz, b) ? a : b)).id;
+
 const results = {};
 const cases = [...presets, ...EXTRA_CASES];
 for (const c of cases) results[c.key] = await engine.score(c.prompt);
@@ -114,6 +118,10 @@ for (const c of cases) {
   const fails = unmet(c.expect, r);
   const shapeOk = r.clauses.every((cl) => cl.xyz.length === 3 && cl.xy[0] === cl.xyz[0] && cl.xy[1] === cl.xyz[1]) && r.whole.xyz?.length === 3;
   if (!shapeOk) fails.push('xyz/xy shape');
+  for (const cl of r.clauses) {
+    const label = nearestLabel(cl.xyz);
+    if (label !== cl.part) fails.push(`"${cl.text}" (${cl.part}) lands nearest the ${label} label`);
+  }
   fails.forEach((f) => failures.push(`case ${c.key} (${c.name}): ${f}`));
   rows.push({ c, r, ok: fails.length === 0 });
 }
@@ -136,6 +144,10 @@ for (const { c, r } of rows.filter((row) => row.c.explain)) {
     console.log(`      "${cl.text}": ${near.map(([id, v]) => `${id} ${v.toFixed(3)}`).join(', ')}`);
   }
 }
+const far = rows.flatMap(({ r }) => r.clauses).map((cl) => ({ cl, d: labelDist(cl.xyz, map.parts.find((p) => p.id === cl.part)) }))
+  .sort((a, b) => b.d - a.d)[0];
+console.log(`\nLanding: each clause lands among its own part's nearest titles, so nearest its own part's label (checked);`);
+console.log(`  farthest from its label: "${far.cl.text}" (${far.cl.part}) at ${far.d.toFixed(3)}. The whole-prompt dot averages across parts.`);
 console.log(`\nNegation check: cos("Use React for the UI", "Don't use React for the UI") = ${negationCos.toFixed(4)}`);
 
 // --- offline fallback
