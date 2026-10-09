@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Engine browser check</title>
+<link rel="icon" href="data:,">
+<style>
+  body { font: 14px/1.4 system-ui, sans-serif; margin: 16px; background: #fafafa; color: #111; }
+  pre { background: #fff; border: 1px solid #ddd; padding: 12px; white-space: pre-wrap; }
+  canvas { background: #fff; border: 1px solid #ddd; margin-right: 8px; }
+  .dark { background: #111827; }
+</style>
+</head>
+<body>
+<h1>demo/engine.js browser check</h1>
+<p>Loads the real engine over http, scores the presets, and compares in-browser embeddings with the vectors built in Node.</p>
+<div><canvas id="xy" width="520" height="520"></canvas><canvas id="zy" width="520" height="520"></canvas><canvas id="dark" class="dark" width="520" height="520"></canvas></div>
+<pre id="out">loading...</pre>
+<script type="module">
+import * as engine from '../demo/engine.js';
+
+const out = document.getElementById('out');
+const log = (s) => { out.textContent += s + '\n'; };
+out.textContent = '';
+const progress = {};
+engine.onProgress((p) => { progress[p.stage] = p; });
+
+try {
+  const t0 = performance.now();
+  await engine.init();
+  const map = engine.getMap();
+  log(`init ${Math.round(performance.now() - t0)} ms; progress ${JSON.stringify(progress)}`);
+
+  const presets = await (await fetch('../demo/presets.json')).json();
+  const results = {};
+  for (const p of presets) {
+    const t = performance.now();
+    const r = await engine.score(p.prompt);
+    results[p.key] = r;
+    log(`[${p.key}] ${p.name}: ${r.partsTouched.join(', ')} | focus ${r.whole.top.sim} ${r.whole.top.part} | ${Math.round(performance.now() - t)} ms`);
+    for (const c of r.clauses) log(`     ${c.touched ? '*' : ' '} ${c.part.padEnd(14)} ${c.sim.toFixed(4)} xyz ${c.xyz.join(', ')}  "${c.text}"`);
+  }
+
+  // Same vector space: embed corpus titles in the browser and compare with the int8 vectors built in Node.
+  const vec = new Int8Array(await (await fetch('../demo/data/' + map.vectors.file)).arrayBuffer());
+  let worst = 1, sum = 0;
+  const N = 40;
+  for (let k = 0; k < N; k++) {
+    const i = Math.floor((k * map.points.length) / N);
+    const v = await engine.embed(map.points[i].t);
+    let d = 0, n = 0;
+    for (let j = 0; j < map.dims; j++) { const q = vec[i * map.dims + j] / map.vectors.scale; d += v[j] * q; n += q * q; }
+    const cos = d / Math.sqrt(n);
+    worst = Math.min(worst, cos); sum += cos;
+  }
+  log(`browser embed vs Node-built int8 vectors (${N} titles): mean cos ${(sum / N).toFixed(5)}, worst ${worst.toFixed(5)}`);
+
+  const fallback = await (await fetch('../demo/data/presets.results.json')).json();
+  const same = fallback.results.every((f) => JSON.stringify(f.result) === JSON.stringify(results[f.key]));
+  log(`presets.results.json identical to live browser results: ${same}`);
+
+  const a = await engine.embed('Use React for the UI'), b = await engine.embed("Don't use React for the UI");
+  log(`negation cos ${a.reduce((s, v, i) => s + v * b[i], 0).toFixed(4)}`);
+
+  const res = performance.getEntriesByType('resource').map((e) => e.name);
+  const foreign = res.filter((u) => new URL(u).origin !== location.origin);
+  log(`resource requests: ${res.length}, off-origin: ${foreign.length} ${foreign.join(' ')}`);
+
+  // Projections of the 3-D layout, to eyeball the islands.
+  const draw = (id, ax, ay, bg) => {
+    const c = document.getElementById(id), g = c.getContext('2d');
+    for (const p of map.points) { g.fillStyle = map.parts.find((q) => q.id === p.part).color; g.fillRect(p[ax] * 520 - 1.5, p[ay] * 520 - 1.5, 3, 3); }
+    g.font = 'bold 13px system-ui'; g.textAlign = 'center';
+    for (const q of map.parts) { g.fillStyle = bg; g.fillText(q.label, q[ax] * 520, q[ay] * 520); }
+    for (const r of Object.values(results)) for (const cl of r.clauses) { g.strokeStyle = bg; g.lineWidth = 2; g.beginPath(); g.arc(cl.xyz[ax === 'x' ? 0 : 2] * 520, cl.xyz[1] * 520, 6, 0, 7); g.stroke(); }
+  };
+  draw('xy', 'x', 'y', '#111'); draw('zy', 'z', 'y', '#111'); draw('dark', 'x', 'y', '#fff');
+  window.__check = { ok: true, results, worst, same, foreign };
+} catch (err) {
+  log('ERROR ' + (err?.stack ?? err));
+  window.__check = { ok: false, error: String(err?.message ?? err) };
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,375 @@
+{
+ "model": "Xenova/all-MiniLM-L6-v2",
+ "thresholds": {
+  "touch": 0.21,
+  "strong": 0.43
+ },
+ "note": "Precomputed score() output for demo/presets.json, for when the model cannot load. Regenerate with: node demo/test-engine.mjs --write",
+ "results": [
+  {
+   "key": "1",
+   "name": "Focused",
+   "prompt": "Add rate limiting to user authentication on the /login endpoint: max 5 failed attempts per IP per minute, then return HTTP 429.",
+   "result": {
+    "clauses": [
+     {
+      "text": "Add rate limiting to user authentication on the /login endpoint: max 5 failed attempts per IP per minute",
+      "part": "auth",
+      "sim": 0.4799,
+      "xyz": [
+       0.6137,
+       0.7483,
+       0.6855
+      ],
+      "xy": [
+       0.6137,
+       0.7483
+      ],
+      "touched": true
+     },
+     {
+      "text": "return HTTP 429",
+      "part": "auth",
+      "sim": 0.2246,
+      "xyz": [
+       0.6153,
+       0.6303,
+       0.6435
+      ],
+      "xy": [
+       0.6153,
+       0.6303
+      ],
+      "touched": true
+     }
+    ],
+    "partsTouched": [
+     "auth"
+    ],
+    "whole": {
+     "sims": {
+      "react": -0.0464,
+      "css": -0.0678,
+      "auth": 0.4968,
+      "postgres": -0.0197,
+      "docker": -0.0266,
+      "payments": 0.0869,
+      "ml": 0.0089,
+      "android": 0.0032,
+      "testing": 0.0925,
+      "ux": 0.064,
+      "security": 0.2553,
+      "writing": -0.0479,
+      "law": 0.04,
+      "money": 0.019,
+      "interpersonal": 0.0401,
+      "cooking": 0.0528
+     },
+     "top": {
+      "part": "auth",
+      "sim": 0.4968
+     },
+     "xyz": [
+      0.6149,
+      0.7541,
+      0.7012
+     ],
+     "xy": [
+      0.6149,
+      0.7541
+     ]
+    }
+   }
+  },
+  {
+   "key": "2",
+   "name": "Scattered",
+   "prompt": "Build my React frontend, set up the Postgres database, add Google login, integrate Stripe payments, write the landing page copy, deploy it with Docker and make it look beautiful.",
+   "result": {
+    "clauses": [
+     {
+      "text": "Build my React frontend",
+      "part": "react",
+      "sim": 0.652,
+      "xyz": [
+       0.2681,
+       0.1299,
+       0.2216
+      ],
+      "xy": [
+       0.2681,
+       0.1299
+      ],
+      "touched": true
+     },
+     {
+      "text": "set up the Postgres database",
+      "part": "postgres",
+      "sim": 0.7034,
+      "xyz": [
+       0.8414,
+       0.5695,
+       0.7079
+      ],
+      "xy": [
+       0.8414,
+       0.5695
+      ],
+      "touched": true
+     },
+     {
+      "text": "add Google login",
+      "part": "auth",
+      "sim": 0.4273,
+      "xyz": [
+       0.5997,
+       0.7206,
+       0.6487
+      ],
+      "xy": [
+       0.5997,
+       0.7206
+      ],
+      "touched": true
+     },
+     {
+      "text": "integrate Stripe payments",
+      "part": "payments",
+      "sim": 0.821,
+      "xyz": [
+       0.0846,
+       0.7556,
+       0.7675
+      ],
+      "xy": [
+       0.0846,
+       0.7556
+      ],
+      "touched": true
+     },
+     {
+      "text": "write the landing page copy",
+      "part": "writing",
+      "sim": 0.203,
+      "xyz": [
+       0.3369,
+       0.699,
+       0.4121
+      ],
+      "xy": [
+       0.3369,
+       0.699
+      ],
+      "touched": false
+     },
+     {
+      "text": "deploy it with Docker",
+      "part": "docker",
+      "sim": 0.7136,
+      "xyz": [
+       0.567,
+       0.3178,
+       0.9233
+      ],
+      "xy": [
+       0.567,
+       0.3178
+      ],
+      "touched": true
+     },
+     {
+      "text": "make it look beautiful",
+      "part": "css",
+      "sim": 0.2838,
+      "xyz": [
+       0.3048,
+       0.6463,
+       0.2089
+      ],
+      "xy": [
+       0.3048,
+       0.6463
+      ],
+      "touched": true
+     }
+    ],
+    "partsTouched": [
+     "react",
+     "postgres",
+     "auth",
+     "payments",
+     "docker",
+     "css"
+    ],
+    "whole": {
+     "sims": {
+      "react": 0.3622,
+      "css": 0.0744,
+      "auth": 0.1779,
+      "postgres": 0.2344,
+      "docker": 0.2475,
+      "payments": 0.2828,
+      "ml": -0.0772,
+      "android": 0.023,
+      "testing": -0.0695,
+      "ux": 0.0753,
+      "security": 0.0733,
+      "writing": 0.0736,
+      "law": -0.046,
+      "money": 0.1503,
+      "interpersonal": 0.0629,
+      "cooking": 0.0101
+     },
+     "top": {
+      "part": "react",
+      "sim": 0.3622
+     },
+     "xyz": [
+      0.2512,
+      0.3538,
+      0.4518
+     ],
+     "xy": [
+      0.2512,
+      0.3538
+     ]
+    }
+   }
+  },
+  {
+   "key": "3",
+   "name": "Negation",
+   "prompt": "Build a simple admin dashboard. Don't use React.",
+   "result": {
+    "clauses": [
+     {
+      "text": "Build a simple admin dashboard",
+      "part": "ux",
+      "sim": 0.1401,
+      "xyz": [
+       0.4355,
+       0.584,
+       0.3847
+      ],
+      "xy": [
+       0.4355,
+       0.584
+      ],
+      "touched": false
+     },
+     {
+      "text": "Don't use React",
+      "part": "react",
+      "sim": 0.7667,
+      "xyz": [
+       0.272,
+       0.1375,
+       0.1703
+      ],
+      "xy": [
+       0.272,
+       0.1375
+      ],
+      "touched": true
+     }
+    ],
+    "partsTouched": [
+     "react"
+    ],
+    "whole": {
+     "sims": {
+      "react": 0.5441,
+      "css": 0.0942,
+      "auth": 0.1429,
+      "postgres": -0.033,
+      "docker": 0.1069,
+      "payments": -0.0535,
+      "ml": -0.0506,
+      "android": 0.0711,
+      "testing": -0.002,
+      "ux": 0.2355,
+      "security": 0.1097,
+      "writing": 0.1055,
+      "law": -0.0547,
+      "money": 0.0597,
+      "interpersonal": 0.1947,
+      "cooking": 0.0937
+     },
+     "top": {
+      "part": "react",
+      "sim": 0.5441
+     },
+     "xyz": [
+      0.2697,
+      0.1363,
+      0.202
+     ],
+     "xy": [
+      0.2697,
+      0.1363
+     ]
+    }
+   }
+  },
+  {
+   "key": "4",
+   "name": "3 AM",
+   "prompt": "why is he not replying to my texts, should I text him again?",
+   "result": {
+    "clauses": [
+     {
+      "text": "why is he not replying to my texts, should I text him again?",
+      "part": "interpersonal",
+      "sim": 0.2372,
+      "xyz": [
+       0.2704,
+       0.765,
+       0.3013
+      ],
+      "xy": [
+       0.2704,
+       0.765
+      ],
+      "touched": true
+     }
+    ],
+    "partsTouched": [
+     "interpersonal"
+    ],
+    "whole": {
+     "sims": {
+      "react": 0.0622,
+      "css": 0.0219,
+      "auth": 0.0328,
+      "postgres": 0.0075,
+      "docker": -0.0198,
+      "payments": 0.0182,
+      "ml": 0.0781,
+      "android": 0.12,
+      "testing": -0.0293,
+      "ux": 0.1712,
+      "security": 0.1201,
+      "writing": 0.1439,
+      "law": 0.0706,
+      "money": 0.092,
+      "interpersonal": 0.2372,
+      "cooking": 0.0161
+     },
+     "top": {
+      "part": "interpersonal",
+      "sim": 0.2372
+     },
+     "xyz": [
+      0.2704,
+      0.765,
+      0.3013
+     ],
+     "xy": [
+      0.2704,
+      0.765
+     ]
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt footprint · the clustering law</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="ui/style.css">
+<script type="importmap">
+{ "imports": { "three": "./ui/vendor/three/three.module.js", "three/addons/": "./ui/vendor/three/addons/" } }
+</script>
+</head>
+<body>
+<div id="stage" data-phase="loading">
+
+  <section class="map" id="map" aria-label="Knowledge map: each point is a question, coloured by part">
+    <canvas id="gl"></canvas>
+    <svg class="leaders" id="leaders" aria-hidden="true"></svg>
+    <div class="labels" id="labels"></div>
+    <header class="map-head">
+      <h2>Knowledge map<span id="mapMeta"></span></h2>
+      <p>Drag to rotate</p>
+    </header>
+    <div class="loader" id="loader" role="status">
+      <h3 id="loaderTitle">Loading the embedding model</h3>
+      <div class="track"><i id="loaderBar"></i></div>
+      <p id="loaderDetail">all-MiniLM-L6-v2 · runs offline, in this browser</p>
+    </div>
+  </section>
+  <div class="banner" id="banner" role="alert" hidden></div>
+  <p class="foot">Embedding model: all-MiniLM-L6-v2 · dots: real Stack Exchange questions</p>
+
+  <svg class="layer" id="trails" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+  <div class="layer" id="marks" aria-hidden="true"></div>
+
+  <section class="panel" aria-label="Prompt">
+    <header class="head">
+      <h1>Prompt footprint</h1>
+      <span class="status" id="status" role="status"><i></i><span id="statusText">Loading…</span></span>
+    </header>
+    <p class="sub">What parts of the model does your prompt pull in?</p>
+
+    <div class="presets" id="presets"></div>
+
+    <div class="card" id="card" data-view="input">
+      <textarea id="prompt" spellcheck="false" placeholder="Type a prompt, or press 1–4" aria-label="Prompt"></textarea>
+      <button class="run" id="run" type="button">Run ↵</button>
+      <ol class="chips" id="chips" aria-label="The prompt, split into clauses"></ol>
+    </div>
+    <div class="toast" id="toast" role="alert"></div>
+
+    <div class="stats">
+      <div class="stat touched"><span class="k">Parts touched</span><b class="n empty" id="nTouched">–</b></div>
+      <div class="stat focus"><span class="k">Focus <small id="focusNote"></small></span><b class="n empty" id="focus">–</b></div>
+    </div>
+
+    <div class="chart">
+      <h2>Where the whole prompt points <small id="barsNote"></small></h2>
+      <ol class="bars" id="bars"><li class="empty">Run a prompt to see this</li></ol>
+    </div>
+  </section>
+</div>
+<script type="module" src="ui/app.js"></script>
+</body>
+</html>

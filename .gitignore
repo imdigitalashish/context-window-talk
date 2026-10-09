@@ -3,3 +3,11 @@ node_modules/
 __pycache__/
 .DS_Store
 *.log
+
+# Caches and scratch output from tools (API fetch cache, browser-automation screenshots)
+.cache/
+.playwright-mcp/
+*.tmp
+
+# Never commit secrets
+.env

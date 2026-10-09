@@ -1,0 +1,21 @@
+{
+  "name": "context-window-talk-scripts",
+  "private": true,
+  "type": "module",
+  "description": "Build pipeline for the prompt-footprint demo (corpus, model, map). Not needed at the venue.",
+  "scripts": {
+    "fetch-corpus": "node fetch-corpus.mjs",
+    "fetch-model": "node fetch-model.mjs",
+    "vendor": "node vendor.mjs",
+    "build-map": "node build-map.mjs",
+    "test": "node ../demo/test-engine.mjs"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^4.3.1",
+    "he": "^1.2.0",
+    "umap-js": "^1.4.0"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.64.0"
+  }
+}

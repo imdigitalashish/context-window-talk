@@ -1,0 +1,4 @@
+{
+  "@huggingface/transformers": "4.3.1 (Apache-2.0, see LICENSE.transformers.txt)",
+  "onnxruntime-web": "1.31.0-dev.20260914-8d85527a0 (MIT, Copyright (c) Microsoft Corporation; the npm package ships no LICENSE file)"
+}

@@ -1,0 +1,54 @@
+[
+  {
+    "key": "1",
+    "id": "focused",
+    "name": "Focused",
+    "prompt": "Add rate limiting to user authentication on the /login endpoint: max 5 failed attempts per IP per minute, then return HTTP 429.",
+    "mustShow": "1 part (auth)",
+    "expect": {
+      "touchedExactly": [
+        "auth"
+      ],
+      "topPart": "auth"
+    }
+  },
+  {
+    "key": "2",
+    "id": "scattered",
+    "name": "Scattered",
+    "prompt": "Build my React frontend, set up the Postgres database, add Google login, integrate Stripe payments, write the landing page copy, deploy it with Docker and make it look beautiful.",
+    "mustShow": "At least 5 parts, and a visibly lower Focus than preset 1",
+    "expect": {
+      "minTouched": 5,
+      "focusBelow": {
+        "key": "1",
+        "by": 0.1
+      }
+    }
+  },
+  {
+    "key": "3",
+    "id": "negation",
+    "name": "Negation",
+    "prompt": "Build a simple admin dashboard. Don't use React.",
+    "mustShow": "The React part still lights up",
+    "expect": {
+      "touchedIncludes": [
+        "react"
+      ]
+    }
+  },
+  {
+    "key": "4",
+    "id": "3am",
+    "name": "3 AM",
+    "prompt": "why is he not replying to my texts, should I text him again?",
+    "mustShow": "The relationships (interpersonal) part",
+    "expect": {
+      "touchedIncludes": [
+        "interpersonal"
+      ],
+      "topPart": "interpersonal"
+    }
+  }
+]
