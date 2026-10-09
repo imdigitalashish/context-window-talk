@@ -151,10 +151,12 @@ function build() {
   return world;
 }
 
-function knn(v, k = 12) {
+/** The k most similar points as [sim, index], descending; only points of `part` when given. */
+function nearest(v, k = 12, part = null) {
   const { points, vectors } = build();
-  const best = []; // [sim, index], descending
+  const best = [];
   for (let i = 0; i < points.length; i++) {
+    if (part && points[i].part !== part) continue;
     const s = dot(v, vectors, i * DIMS);
     if (best.length < k || s > best[best.length - 1][0]) {
       let j = best.length < k ? best.length : k - 1;
@@ -162,16 +164,28 @@ function knn(v, k = 12) {
       best[j] = [s, i];
     }
   }
-  const vote = new Map();
-  for (const [s, i] of best) vote.set(points[i].part, (vote.get(points[i].part) || 0) + Math.max(0, s));
-  const part = [...vote].sort((a, b) => b[1] - a[1])[0][0];
+  return best;
+}
+
+/** softmax(sim / 0.05)-weighted average position of the given neighbours. */
+function place(best) {
+  const { points } = build();
   let wx = 0, wy = 0, wz = 0, ws = 0;
   for (const [s, i] of best) {
     const w = Math.exp((s - best[0][0]) / 0.05);
     wx += w * points[i].x; wy += w * points[i].y; wz += w * points[i].z; ws += w;
   }
   const xyz = [round3(wx / ws), round3(wy / ws), round3(wz / ws)];
-  return { part, xyz, xy: xyz.slice(0, 2) };
+  return { xyz, xy: xyz.slice(0, 2) };
+}
+
+/** Clause: the part wins a similarity-weighted kNN vote, and its dot lands among that part's own nearest points. */
+function knnClause(v) {
+  const { points } = build();
+  const vote = new Map();
+  for (const [s, i] of nearest(v)) vote.set(points[i].part, (vote.get(points[i].part) || 0) + Math.max(0, s));
+  const part = [...vote].sort((a, b) => b[1] - a[1])[0][0];
+  return { part, ...place(nearest(v, 12, part)) };
 }
 
 const listeners = new Set();
@@ -224,7 +238,7 @@ export async function score(prompt) {
   const clauses = [];
   for (const text of texts) {
     const v = await embed(text);
-    const { part, xyz, xy } = knn(v);
+    const { part, xyz, xy } = knnClause(v);
     const sim = round3(dot(v, parts[index.get(part)].centroid));
     clauses.push({ text, part, sim, xyz, xy, touched: sim >= THRESHOLDS.touch });
   }
@@ -237,6 +251,6 @@ export async function score(prompt) {
     sims[p.id] = s;
     if (!top || s > top.sim) top = { part: p.id, sim: s };
   }
-  const { xyz, xy } = knn(wv);
+  const { xyz, xy } = place(nearest(wv)); // the whole prompt may land between islands
   return { clauses, partsTouched, whole: { sims, top, xyz, xy } };
 }
