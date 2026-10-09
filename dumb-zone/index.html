@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The dumb zone · context meter</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="ui/style.css">
+</head>
+<body>
+<div id="stage" data-zone="smart">
+
+  <header class="top">
+    <div>
+      <h1>The dumb zone</h1>
+      <p class="sub">Answer quality falls as the context window fills, long before it's full</p>
+    </div>
+    <div class="controls">
+      <div class="group stepper" role="group" aria-label="Turn">
+        <button class="arrow" id="prev" type="button" aria-label="Previous turn">‹</button>
+        <output id="turn" aria-live="polite"><b>Turn 0</b> <span>of 40</span></output>
+        <button class="arrow" id="next" type="button" aria-label="Next turn">›</button>
+      </div>
+      <div class="group fix" role="group" aria-label="Fixes">
+        <button id="compact" type="button"><kbd>C</kbd>Compact</button>
+        <button id="fresh" type="button"><kbd>R</kbd>Fresh chat</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="card meter" aria-label="Context meter">
+    <div class="head">
+      <h2>Context window <small id="meterSub">before you type anything</small></h2>
+      <div class="group" id="windows" role="group" aria-label="Window size"></div>
+    </div>
+    <div class="numbers">
+      <div class="num"><span class="k">Tokens used</span><span class="v"><b id="used">0</b><span id="ofWin">of 200K</span></span></div>
+      <div class="num pct"><span class="k"><span class="zone-pill"><i></i><span id="zoneName">Smart zone</span></span></span><span class="v"><b id="pct">0%</b></span></div>
+    </div>
+    <div class="bar-wrap">
+      <div class="bar" id="bar"></div>
+      <div class="ticks"><i style="left:40%"></i><i style="left:60%"></i></div>
+      <span class="over-flag">Over the limit: the agent must compact</span>
+    </div>
+    <div class="zones" aria-hidden="true">
+      <span class="z1">Smart zone · 0–40%</span><span class="z2">Dumb zone</span><span class="z3">Deep dumb zone · 60%+</span>
+    </div>
+    <p class="credit"><b>40% rule of thumb: Dex Horthy, HumanLayer</b> · his guide aims for 40–60%</p>
+    <ul class="legend" id="legend"></ul>
+    <div class="note" id="note" role="status"></div>
+  </section>
+
+  <section class="card chart" aria-label="Accuracy versus context length">
+    <div class="head">
+      <h2>Accuracy vs context length</h2>
+      <p>NoLiMa benchmark · Adobe, ICML 2025</p>
+    </div>
+    <svg id="plot" width="780" height="318" viewBox="0 0 780 318" role="img" aria-label="NoLiMa accuracy by context length for five models"></svg>
+    <div class="readout" aria-live="polite">
+      <div class="line1"><span id="roLabel">At 32K tokens, GPT-4o:</span><b id="roValue">69.7%</b><em id="roBase">from 99.3% at short length</em></div>
+      <p class="line2" id="roNote"></p>
+      <div class="claim">
+        <span class="pill"><span>claims</span><s><b id="claimed">128K</b></s></span>
+        <span class="pill eff"><span>effective</span><b id="effective">8K</b></span>
+        <small>= longest length at ≥85% of base score</small>
+      </div>
+    </div>
+  </section>
+
+  <section class="card selfcond" aria-label="Self-conditioning">
+    <div>
+      <div class="head">
+        <h2>Self-conditioning: errors in the context breed more errors</h2>
+        <span class="tag">Illustration · not measured</span>
+      </div>
+      <div class="strips">
+        <div class="strip"><p class="lbl">Same chat, after an early mistake</p><div class="cells" id="stripSame"></div></div>
+        <div class="strip"><p class="lbl">Fresh chat with a summary</p><div class="cells" id="stripFresh"></div></div>
+      </div>
+      <div class="keyrow"><span>Turns 1 → 30</span><span><i></i>correct</span><span><i class="bad"></i>wrong</span><span><b class="caret"></b>early mistake</span><span><i class="cut"></i>fresh chat starts</span></div>
+    </div>
+    <ul class="findings">
+      <li>Errors already in the context make new errors more likely.</li>
+      <li>Bigger models don't fix it; thinking models resist it.</li>
+      <li>Keeping old turns out of the context reduces it.</li>
+      <li class="cite">Sinha et al. 2025, arXiv:2509.09677 (§3.2, App. A.2)</li>
+    </ul>
+  </section>
+
+  <p class="foot" id="foot"><b>Sources</b> · Accuracy: NoLiMa results table, Modarressi et al., ICML 2025 (<span class="m">cited</span>) · Token sizes: medians of <span id="nSessions">193</span> of my own Codex CLI sessions (<span class="m">measured</span>) · MCP tools: Anthropic, “Introducing advanced tool use”, 2025, GitHub server (<span class="m">cited</span>) · 40%: Dex Horthy, HumanLayer · Self-conditioning: Sinha et al. 2025 (illustrated)</p>
+  <div class="banner" id="banner" role="alert" hidden></div>
+</div>
+<script type="module" src="ui/app.js"></script>
+</body>
+</html>

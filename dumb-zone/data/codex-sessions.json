@@ -1,0 +1,366 @@
+{
+ "source": "Codex CLI session logs on the speaker's laptop (~/.codex/sessions); aggregate token counts only",
+ "tokenizer": "tiktoken o200k_base for logged text; per-call context = Codex's own last_token_usage.input_tokens",
+ "sessions": 193,
+ "first_call_context": {
+  "median": 20338
+ },
+ "system_prompt_tokens": {
+  "median": 3257
+ },
+ "developer_messages_tokens": {
+  "median": 5820
+ },
+ "agents_md_tokens": {
+  "median": 560,
+  "sessions_with_agents_md": 35
+ },
+ "first_user_messages_tokens": {
+  "median": 246
+ },
+ "tool_definitions_tokens_derived": {
+  "median": 8166,
+  "how": "first-call context minus every logged text before the first call"
+ },
+ "calls_per_session": {
+  "median": 45
+ },
+ "model_context_window": {
+  "median": 353400
+ },
+ "sessions_past_40pct_of_window": {
+  "count": 88,
+  "of": 193
+ },
+ "compactions": {
+  "count": 234,
+  "summary_tokens_median": 1132,
+  "context_before_median": 219364,
+  "context_after_median": 23156,
+  "after_minus_same_session_first_call_median": 4506,
+  "how": "summary = the compaction message Codex logs; after = first model call after it"
+ },
+ "growth_per_step": [
+  {
+   "step": 1,
+   "sessions": 193,
+   "median_growth_since_first_call": 2470,
+   "chat": 1073,
+   "tool": 754,
+   "read": 643
+  },
+  {
+   "step": 2,
+   "sessions": 175,
+   "median_growth_since_first_call": 5280,
+   "chat": 895,
+   "tool": 2194,
+   "read": 2192
+  },
+  {
+   "step": 3,
+   "sessions": 164,
+   "median_growth_since_first_call": 9032,
+   "chat": 1207,
+   "tool": 4180,
+   "read": 3645
+  },
+  {
+   "step": 4,
+   "sessions": 157,
+   "median_growth_since_first_call": 11781,
+   "chat": 1577,
+   "tool": 5513,
+   "read": 4691
+  },
+  {
+   "step": 5,
+   "sessions": 152,
+   "median_growth_since_first_call": 15578,
+   "chat": 2020,
+   "tool": 7818,
+   "read": 5740
+  },
+  {
+   "step": 6,
+   "sessions": 150,
+   "median_growth_since_first_call": 17742,
+   "chat": 2209,
+   "tool": 9313,
+   "read": 6219
+  },
+  {
+   "step": 7,
+   "sessions": 145,
+   "median_growth_since_first_call": 21091,
+   "chat": 2799,
+   "tool": 11117,
+   "read": 7176
+  },
+  {
+   "step": 8,
+   "sessions": 141,
+   "median_growth_since_first_call": 25571,
+   "chat": 3187,
+   "tool": 13958,
+   "read": 8426
+  },
+  {
+   "step": 9,
+   "sessions": 137,
+   "median_growth_since_first_call": 27827,
+   "chat": 3683,
+   "tool": 14915,
+   "read": 9229
+  },
+  {
+   "step": 10,
+   "sessions": 135,
+   "median_growth_since_first_call": 31768,
+   "chat": 4227,
+   "tool": 17191,
+   "read": 10350
+  },
+  {
+   "step": 11,
+   "sessions": 132,
+   "median_growth_since_first_call": 33464,
+   "chat": 4632,
+   "tool": 17888,
+   "read": 10944
+  },
+  {
+   "step": 12,
+   "sessions": 132,
+   "median_growth_since_first_call": 38184,
+   "chat": 5157,
+   "tool": 20439,
+   "read": 12588
+  },
+  {
+   "step": 13,
+   "sessions": 130,
+   "median_growth_since_first_call": 38716,
+   "chat": 5201,
+   "tool": 20646,
+   "read": 12869
+  },
+  {
+   "step": 14,
+   "sessions": 128,
+   "median_growth_since_first_call": 42870,
+   "chat": 5601,
+   "tool": 23207,
+   "read": 14063
+  },
+  {
+   "step": 15,
+   "sessions": 128,
+   "median_growth_since_first_call": 46376,
+   "chat": 6017,
+   "tool": 25662,
+   "read": 14697
+  },
+  {
+   "step": 16,
+   "sessions": 127,
+   "median_growth_since_first_call": 48298,
+   "chat": 6160,
+   "tool": 26832,
+   "read": 15306
+  },
+  {
+   "step": 17,
+   "sessions": 125,
+   "median_growth_since_first_call": 49657,
+   "chat": 6564,
+   "tool": 27109,
+   "read": 15983
+  },
+  {
+   "step": 18,
+   "sessions": 122,
+   "median_growth_since_first_call": 49520,
+   "chat": 6563,
+   "tool": 27087,
+   "read": 15870
+  },
+  {
+   "step": 19,
+   "sessions": 122,
+   "median_growth_since_first_call": 51234,
+   "chat": 6997,
+   "tool": 27776,
+   "read": 16461
+  },
+  {
+   "step": 20,
+   "sessions": 122,
+   "median_growth_since_first_call": 51159,
+   "chat": 6862,
+   "tool": 28066,
+   "read": 16231
+  },
+  {
+   "step": 21,
+   "sessions": 119,
+   "median_growth_since_first_call": 53582,
+   "chat": 7205,
+   "tool": 29580,
+   "read": 16797
+  },
+  {
+   "step": 22,
+   "sessions": 118,
+   "median_growth_since_first_call": 55040,
+   "chat": 7081,
+   "tool": 30738,
+   "read": 17221
+  },
+  {
+   "step": 23,
+   "sessions": 116,
+   "median_growth_since_first_call": 58948,
+   "chat": 7425,
+   "tool": 32973,
+   "read": 18551
+  },
+  {
+   "step": 24,
+   "sessions": 114,
+   "median_growth_since_first_call": 57670,
+   "chat": 7431,
+   "tool": 32430,
+   "read": 17810
+  },
+  {
+   "step": 25,
+   "sessions": 111,
+   "median_growth_since_first_call": 60734,
+   "chat": 8025,
+   "tool": 34200,
+   "read": 18510
+  },
+  {
+   "step": 26,
+   "sessions": 111,
+   "median_growth_since_first_call": 60947,
+   "chat": 8010,
+   "tool": 34454,
+   "read": 18483
+  },
+  {
+   "step": 27,
+   "sessions": 110,
+   "median_growth_since_first_call": 65481,
+   "chat": 8532,
+   "tool": 37143,
+   "read": 19806
+  },
+  {
+   "step": 28,
+   "sessions": 110,
+   "median_growth_since_first_call": 67940,
+   "chat": 8836,
+   "tool": 38783,
+   "read": 20322
+  },
+  {
+   "step": 29,
+   "sessions": 108,
+   "median_growth_since_first_call": 69568,
+   "chat": 9114,
+   "tool": 40240,
+   "read": 20213
+  },
+  {
+   "step": 30,
+   "sessions": 107,
+   "median_growth_since_first_call": 75385,
+   "chat": 9971,
+   "tool": 44075,
+   "read": 21339
+  },
+  {
+   "step": 31,
+   "sessions": 106,
+   "median_growth_since_first_call": 77529,
+   "chat": 10128,
+   "tool": 45424,
+   "read": 21977
+  },
+  {
+   "step": 32,
+   "sessions": 106,
+   "median_growth_since_first_call": 80437,
+   "chat": 10680,
+   "tool": 47230,
+   "read": 22527
+  },
+  {
+   "step": 33,
+   "sessions": 103,
+   "median_growth_since_first_call": 82728,
+   "chat": 11297,
+   "tool": 48461,
+   "read": 22969
+  },
+  {
+   "step": 34,
+   "sessions": 100,
+   "median_growth_since_first_call": 86478,
+   "chat": 11375,
+   "tool": 52007,
+   "read": 23096
+  },
+  {
+   "step": 35,
+   "sessions": 100,
+   "median_growth_since_first_call": 86879,
+   "chat": 11367,
+   "tool": 52672,
+   "read": 22840
+  },
+  {
+   "step": 36,
+   "sessions": 98,
+   "median_growth_since_first_call": 92842,
+   "chat": 12028,
+   "tool": 56386,
+   "read": 24428
+  },
+  {
+   "step": 37,
+   "sessions": 97,
+   "median_growth_since_first_call": 96291,
+   "chat": 12622,
+   "tool": 58390,
+   "read": 25279
+  },
+  {
+   "step": 38,
+   "sessions": 97,
+   "median_growth_since_first_call": 96574,
+   "chat": 12157,
+   "tool": 60334,
+   "read": 24082
+  },
+  {
+   "step": 39,
+   "sessions": 97,
+   "median_growth_since_first_call": 97989,
+   "chat": 12356,
+   "tool": 61436,
+   "read": 24197
+  },
+  {
+   "step": 40,
+   "sessions": 96,
+   "median_growth_since_first_call": 99140,
+   "chat": 12207,
+   "tool": 63193,
+   "read": 23739
+  }
+ ],
+ "growth_split": "median growth since the first call, over sessions that reached the step without compacting; split by the share of characters appended so far: chat (messages + tool-call text), tool outputs, file reads"
+}
