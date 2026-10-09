@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lost in the middle · U-shaped attention</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="ui/style.css">
+</head>
+<body>
+<div id="stage" data-ready="false">
+
+  <header class="top">
+    <div class="titles">
+      <h1>Lost in the middle</h1>
+      <p class="sub">Hide one fact in a long prompt. Where can the model still find it?</p>
+    </div>
+    <div class="controls">
+      <div class="seg" id="lenSeg" role="group" aria-label="Context length"></div>
+      <button class="tog" id="lookBtn" type="button" aria-pressed="true"><kbd>L</kbd><i class="box"></i><span>9 look‑alike facts</span></button>
+      <button class="tog" id="fixBtn" type="button" aria-pressed="false"><kbd>Q</kbd><i class="box"></i><span>Ask before and after</span></button>
+    </div>
+  </header>
+
+  <section class="card recall" aria-label="Recall by needle position">
+    <div class="side">
+      <h2>Recall by position</h2>
+      <p class="where" id="where">Needle at 0%</p>
+      <p class="big"><b id="hits">–</b><span id="outOf">/10</span><em>found</em></p>
+      <p class="note" id="missNote"></p>
+    </div>
+    <p class="meta" id="recallMeta"></p>
+  </section>
+
+  <div class="strip-side">
+    <h2>Your prompt</h2>
+    <p id="stripCap">8,192 tokens</p>
+    <p id="pinKey"><i class="pinkey"></i>look‑alike facts</p>
+  </div>
+
+  <section class="card attn" aria-label="Attention by position">
+    <div class="side">
+      <h2>Attention by position</h2>
+      <p class="where">Token 0 alone gets</p>
+      <p class="big"><b id="sinkPct">–</b><span>%</span></p>
+      <p class="cap">of the question's attention</p>
+      <p class="note" id="attnNote"></p>
+    </div>
+    <p class="meta" id="attnMeta"></p>
+  </section>
+
+  <svg id="viz" viewBox="0 0 1920 1080" aria-hidden="true">
+    <g id="gRecall"></g>
+    <g id="gStrip"></g>
+    <g id="gAttn"></g>
+    <g id="gNeedle"></g>
+  </svg>
+  <div class="hit" id="hit" role="slider" tabindex="0" aria-label="Needle position in the document" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0%"></div>
+
+  <footer class="foot">
+    <p id="footMeasured"></p>
+    <p>Sources: Liu et al. 2023, “Lost in the Middle” · Xiao et al. 2023, StreamingLLM (attention sinks) · Hsieh et al. 2024, “Found in the Middle”</p>
+  </footer>
+
+  <div class="banner" id="banner" role="alert" hidden></div>
+</div>
+<script type="module" src="ui/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,1312 @@
+{
+ "what": "Recall by needle position. One fact (the needle) is hidden at 11 depths in Project Gutenberg text; the question comes at the end. Each point = 10 needles, each in its own book.",
+ "model": "Qwen2.5-3B-Instruct (MLX 4-bit, group size 64)",
+ "model_short": "Qwen2.5-3B-Instruct",
+ "model_source": "Qwen/Qwen2.5-3B-Instruct from the local Hugging Face cache, converted with mlx_lm.convert -q --q-bits 4 --q-group-size 64 (4.5 bits/weight)",
+ "decoding": "greedy (argmax), at most 24 new tokens, stops at <|im_end|>",
+ "scoring": "exact match: correct if the answer string appears in the reply (case-insensitive), as in Liu et al. 2023",
+ "prompt": {
+  "system": "Qwen2.5 default system prompt",
+  "instruction": "Read the document below and answer the question after it.",
+  "answer_rule": "Answer with just the answer from the document."
+ },
+ "depths": [
+  0.0,
+  0.1,
+  0.2,
+  0.3,
+  0.4,
+  0.5,
+  0.6,
+  0.7,
+  0.8,
+  0.9,
+  1.0
+ ],
+ "needles": [
+  {
+   "statement": "The Wi-Fi password at the venue is blue-dorayaki-42.",
+   "question": "What is the Wi-Fi password at the venue?",
+   "answer": "blue-dorayaki-42",
+   "lookalikes": [
+    "The Wi-Fi password at the library is silver-idli-15.",
+    "The Wi-Fi password at the hostel is purple-dhokla-72.",
+    "The Wi-Fi password at the canteen is silver-momo-71.",
+    "The Wi-Fi password at the gym is yellow-rasgulla-37.",
+    "The Wi-Fi password at the auditorium is brown-vada-46.",
+    "The Wi-Fi password at the guest house is pink-jalebi-89.",
+    "The Wi-Fi password at the staff room is purple-dhokla-87.",
+    "The Wi-Fi password at the admin block is pink-momo-22.",
+    "The Wi-Fi password at the sports complex is green-pakora-70."
+   ],
+   "book": "Pride and Prejudice",
+   "gutenberg_id": 1342
+  },
+  {
+   "statement": "The secret code for free chai at the canteen is MASALA-7781.",
+   "question": "What is the secret code for free chai at the canteen?",
+   "answer": "MASALA-7781",
+   "lookalikes": [
+    "The secret code for free chai at the library cafe is TULSI-2033.",
+    "The secret code for free chai at the hostel mess is IRANI-2931.",
+    "The secret code for free chai at the staff room is NOON-8364.",
+    "The secret code for free chai at the food court is NOON-7219.",
+    "The secret code for free chai at the night stall is KESAR-2537.",
+    "The secret code for free chai at the station stall is NOON-1464.",
+    "The secret code for free chai at the juice centre is SULEMANI-8090.",
+    "The secret code for free chai at the tuck shop is ADRAK-8297.",
+    "The secret code for free chai at the guest house is IRANI-4748."
+   ],
+   "book": "The Adventures of Sherlock Holmes",
+   "gutenberg_id": 1661
+  },
+  {
+   "statement": "The hackathon demo room is Room 4C-17.",
+   "question": "Which room is the hackathon demo room?",
+   "answer": "4C-17",
+   "lookalikes": [
+    "The robotics club demo room is Room 1A-20.",
+    "The design team demo room is Room 6H-31.",
+    "The startup cell demo room is Room 5D-87.",
+    "The quiz club demo room is Room 4F-14.",
+    "The coding club demo room is Room 3E-91.",
+    "The drone team demo room is Room 7H-75.",
+    "The music society demo room is Room 6F-66.",
+    "The film club demo room is Room 9D-14.",
+    "The AI lab demo room is Room 1D-69."
+   ],
+   "book": "Frankenstein",
+   "gutenberg_id": 84
+  },
+  {
+   "statement": "The locker combination for the robotics lab is 38-11-52.",
+   "question": "What is the locker combination for the robotics lab?",
+   "answer": "38-11-52",
+   "lookalikes": [
+    "The locker combination for the chemistry lab is 40-85-79.",
+    "The locker combination for the physics lab is 26-57-87.",
+    "The locker combination for the music room is 70-90-84.",
+    "The locker combination for the gym is 18-87-11.",
+    "The locker combination for the library is 70-43-80.",
+    "The locker combination for the drone lab is 39-34-70.",
+    "The locker combination for the art studio is 79-80-70.",
+    "The locker combination for the sports room is 60-91-29.",
+    "The locker combination for the IoT lab is 39-91-29."
+   ],
+   "book": "Moby Dick",
+   "gutenberg_id": 2701
+  },
+  {
+   "statement": "Priya's pet tortoise is named Captain Pakora.",
+   "question": "What is the name of Priya's pet tortoise?",
+   "answer": "Captain Pakora",
+   "lookalikes": [
+    "Rahul's pet tortoise is named Colonel Idli.",
+    "Ananya's pet tortoise is named Doctor Dhokla.",
+    "Arjun's pet tortoise is named Admiral Ladoo.",
+    "Meera's pet tortoise is named Doctor Samosa.",
+    "Kabir's pet tortoise is named Major Dhokla.",
+    "Sneha's pet tortoise is named Baron Idli.",
+    "Rohan's pet tortoise is named Major Momo.",
+    "Isha's pet tortoise is named Baron Barfi.",
+    "Vikram's pet tortoise is named Lady Idli."
+   ],
+   "book": "A Tale of Two Cities",
+   "gutenberg_id": 98
+  },
+  {
+   "statement": "The admin port of the demo server is 47291.",
+   "question": "What is the admin port of the demo server?",
+   "answer": "47291",
+   "lookalikes": [
+    "The admin port of the build server is 50822.",
+    "The admin port of the test server is 26740.",
+    "The admin port of the mail server is 58613.",
+    "The admin port of the backup server is 33496.",
+    "The admin port of the staging server is 62113.",
+    "The admin port of the game server is 55249.",
+    "The admin port of the chat server is 58489.",
+    "The admin port of the file server is 52731.",
+    "The admin port of the proxy server is 44736."
+   ],
+   "book": "The Time Machine",
+   "gutenberg_id": 35
+  },
+  {
+   "statement": "The cricket team's lucky jersey number this season is 863.",
+   "question": "What is the cricket team's lucky jersey number this season?",
+   "answer": "863",
+   "lookalikes": [
+    "The football team's lucky jersey number this season is 912.",
+    "The hockey team's lucky jersey number this season is 687.",
+    "The kabaddi team's lucky jersey number this season is 941.",
+    "The chess team's lucky jersey number this season is 182.",
+    "The basketball team's lucky jersey number this season is 596.",
+    "The volleyball team's lucky jersey number this season is 880.",
+    "The badminton team's lucky jersey number this season is 367.",
+    "The tennis team's lucky jersey number this season is 137.",
+    "The athletics team's lucky jersey number this season is 100."
+   ],
+   "book": "Dracula",
+   "gutenberg_id": 345
+  },
+  {
+   "statement": "The secret ingredient in Ravi's biryani is smoked kokum.",
+   "question": "What is the secret ingredient in Ravi's biryani?",
+   "answer": "smoked kokum",
+   "lookalikes": [
+    "The secret ingredient in Asha's biryani is candied mace.",
+    "The secret ingredient in Imran's biryani is burnt fennel.",
+    "The secret ingredient in Deepa's biryani is crushed jaggery.",
+    "The secret ingredient in Farhan's biryani is crushed amchur.",
+    "The secret ingredient in Lakshmi's biryani is roasted jaggery.",
+    "The secret ingredient in Manoj's biryani is pickled fennel.",
+    "The secret ingredient in Nisha's biryani is crushed curry leaf.",
+    "The secret ingredient in Suresh's biryani is burnt nutmeg.",
+    "The secret ingredient in Zoya's biryani is pickled nutmeg."
+   ],
+   "book": "Great Expectations",
+   "gutenberg_id": 1400
+  },
+  {
+   "statement": "The campus shuttle leaves from Gate 14B.",
+   "question": "Which gate does the campus shuttle leave from?",
+   "answer": "14B",
+   "lookalikes": [
+    "The airport bus leaves from Gate 8D.",
+    "The city bus leaves from Gate 13C.",
+    "The night bus leaves from Gate 7G.",
+    "The metro feeder leaves from Gate 2A.",
+    "The hostel van leaves from Gate 5C.",
+    "The college bus leaves from Gate 26F.",
+    "The staff bus leaves from Gate 7E.",
+    "The sports bus leaves from Gate 21A.",
+    "The library van leaves from Gate 15E."
+   ],
+   "book": "The War of the Worlds",
+   "gutenberg_id": 36
+  },
+  {
+   "statement": "The DJ night at the fest starts at 9:40 pm.",
+   "question": "What time does the DJ night at the fest start?",
+   "answer": "9:40",
+   "lookalikes": [
+    "The DJ night at the freshers party starts at 9:55 pm.",
+    "The DJ night at the farewell starts at 8:25 pm.",
+    "The DJ night at the alumni meet starts at 7:15 pm.",
+    "The DJ night at the hostel day starts at 11:05 pm.",
+    "The DJ night at the cultural week starts at 8:50 pm.",
+    "The DJ night at the tech week starts at 6:30 pm.",
+    "The DJ night at the sports day starts at 10:55 pm.",
+    "The DJ night at the Diwali party starts at 11:35 pm.",
+    "The DJ night at the Holi party starts at 7:45 pm."
+   ],
+   "book": "Treasure Island",
+   "gutenberg_id": 120
+  }
+ ],
+ "conditions": {
+  "lookalikes-after": {
+   "label": "Needle + 9 look-alike facts, question after the document",
+   "by_length": {
+    "2048": {
+     "points": [
+      {
+       "depth": 0.0,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.0,
+       "misses": []
+      },
+      {
+       "depth": 0.1,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.0989,
+       "misses": []
+      },
+      {
+       "depth": 0.2,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.1992,
+       "misses": []
+      },
+      {
+       "depth": 0.3,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.3016,
+       "misses": []
+      },
+      {
+       "depth": 0.4,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.3973,
+       "misses": []
+      },
+      {
+       "depth": 0.5,
+       "correct": 9,
+       "n": 10,
+       "depth_actual_mean": 0.5072,
+       "misses": [
+        {
+         "trial": 4,
+         "reply": "Baron Barfi.",
+         "kind": "lookalike",
+         "said": "Baron Barfi",
+         "answer": "Captain Pakora"
+        }
+       ]
+      },
+      {
+       "depth": 0.6,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.6031,
+       "misses": []
+      },
+      {
+       "depth": 0.7,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.7012,
+       "misses": []
+      },
+      {
+       "depth": 0.8,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.8018,
+       "misses": []
+      },
+      {
+       "depth": 0.9,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.8987,
+       "misses": []
+      },
+      {
+       "depth": 1.0,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 1.0,
+       "misses": []
+      }
+     ],
+     "prompt_tokens": [
+      1957,
+      2031
+     ],
+     "trials": [
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ]
+     ],
+     "lookalike_pos": [
+      [
+       0.058,
+       0.1395,
+       0.3147,
+       0.4105,
+       0.476,
+       0.6416,
+       0.6768,
+       0.77,
+       0.9212
+      ],
+      [
+       0.0378,
+       0.2173,
+       0.3027,
+       0.3931,
+       0.5266,
+       0.5803,
+       0.7342,
+       0.8497,
+       0.9213
+      ],
+      [
+       0.0514,
+       0.1583,
+       0.3094,
+       0.3863,
+       0.4662,
+       0.6601,
+       0.7679,
+       0.8209,
+       0.9832
+      ],
+      [
+       0.039,
+       0.1019,
+       0.2298,
+       0.4181,
+       0.4977,
+       0.6282,
+       0.6729,
+       0.8268,
+       0.9459
+      ],
+      [
+       0.0978,
+       0.1354,
+       0.3141,
+       0.3615,
+       0.5597,
+       0.6231,
+       0.672,
+       0.8718,
+       0.9578
+      ],
+      [
+       0.1041,
+       0.1571,
+       0.3019,
+       0.3849,
+       0.4482,
+       0.5636,
+       0.7342,
+       0.7893,
+       0.9444
+      ],
+      [
+       0.0015,
+       0.1397,
+       0.2224,
+       0.398,
+       0.4463,
+       0.5768,
+       0.7329,
+       0.8387,
+       0.9697
+      ],
+      [
+       0.0837,
+       0.1736,
+       0.1952,
+       0.3678,
+       0.5341,
+       0.5888,
+       0.7485,
+       0.813,
+       0.9793
+      ],
+      [
+       0.0804,
+       0.2116,
+       0.2767,
+       0.3474,
+       0.5046,
+       0.6119,
+       0.7416,
+       0.7792,
+       0.9725
+      ],
+      [
+       0.0739,
+       0.1723,
+       0.2842,
+       0.4123,
+       0.4617,
+       0.6455,
+       0.7428,
+       0.8162,
+       0.9422
+      ]
+     ],
+     "run_finished": "2026-10-09T17:57:50+05:30",
+     "model_seconds": 139.5
+    },
+    "8192": {
+     "points": [
+      {
+       "depth": 0.0,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.0,
+       "misses": []
+      },
+      {
+       "depth": 0.1,
+       "correct": 8,
+       "n": 10,
+       "depth_actual_mean": 0.0996,
+       "misses": [
+        {
+         "trial": 6,
+         "reply": "941",
+         "kind": "lookalike",
+         "said": "941",
+         "answer": "863"
+        },
+        {
+         "trial": 9,
+         "reply": "11:35 pm",
+         "kind": "lookalike",
+         "said": "11:35",
+         "answer": "9:40"
+        }
+       ]
+      },
+      {
+       "depth": 0.2,
+       "correct": 8,
+       "n": 10,
+       "depth_actual_mean": 0.1999,
+       "misses": [
+        {
+         "trial": 0,
+         "reply": "The Wi-Fi password at the venue is blue-dhokla-42.",
+         "kind": "garbled",
+         "said": "blue-dhokla-42",
+         "answer": "blue-dorayaki-42"
+        },
+        {
+         "trial": 9,
+         "reply": "7:15 pm",
+         "kind": "lookalike",
+         "said": "7:15",
+         "answer": "9:40"
+        }
+       ]
+      },
+      {
+       "depth": 0.3,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.2995,
+       "misses": []
+      },
+      {
+       "depth": 0.4,
+       "correct": 8,
+       "n": 10,
+       "depth_actual_mean": 0.4,
+       "misses": [
+        {
+         "trial": 5,
+         "reply": "52731",
+         "kind": "lookalike",
+         "said": "52731",
+         "answer": "47291"
+        },
+        {
+         "trial": 6,
+         "reply": "367",
+         "kind": "lookalike",
+         "said": "367",
+         "answer": "863"
+        }
+       ]
+      },
+      {
+       "depth": 0.5,
+       "correct": 8,
+       "n": 10,
+       "depth_actual_mean": 0.5003,
+       "misses": [
+        {
+         "trial": 7,
+         "reply": "The secret ingredient in Ravi's biryani is pickled fennel.",
+         "kind": "lookalike",
+         "said": "pickled fennel",
+         "answer": "smoked kokum"
+        },
+        {
+         "trial": 9,
+         "reply": "7:45 pm",
+         "kind": "lookalike",
+         "said": "7:45",
+         "answer": "9:40"
+        }
+       ]
+      },
+      {
+       "depth": 0.6,
+       "correct": 8,
+       "n": 10,
+       "depth_actual_mean": 0.6008,
+       "misses": [
+        {
+         "trial": 0,
+         "reply": "green-pakora-70",
+         "kind": "lookalike",
+         "said": "green-pakora-70",
+         "answer": "blue-dorayaki-42"
+        },
+        {
+         "trial": 6,
+         "reply": "367",
+         "kind": "lookalike",
+         "said": "367",
+         "answer": "863"
+        }
+       ]
+      },
+      {
+       "depth": 0.7,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.6999,
+       "misses": []
+      },
+      {
+       "depth": 0.8,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.8002,
+       "misses": []
+      },
+      {
+       "depth": 0.9,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.9002,
+       "misses": []
+      },
+      {
+       "depth": 1.0,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 1.0,
+       "misses": []
+      }
+     ],
+     "prompt_tokens": [
+      7994,
+      8142
+     ],
+     "trials": [
+      [
+       true,
+       true,
+       false,
+       true,
+       true,
+       true,
+       false,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       false,
+       true,
+       true,
+       false,
+       true,
+       false,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       false,
+       false,
+       true,
+       true,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true
+      ]
+     ],
+     "lookalike_pos": [
+      [
+       0.0854,
+       0.1537,
+       0.2499,
+       0.3749,
+       0.5532,
+       0.5739,
+       0.6719,
+       0.8109,
+       0.9748
+      ],
+      [
+       0.0629,
+       0.1202,
+       0.3009,
+       0.3581,
+       0.4867,
+       0.646,
+       0.7259,
+       0.8484,
+       0.8986
+      ],
+      [
+       0.099,
+       0.1467,
+       0.2647,
+       0.3801,
+       0.5032,
+       0.6117,
+       0.6686,
+       0.8623,
+       0.9886
+      ],
+      [
+       0.0052,
+       0.1901,
+       0.3171,
+       0.3534,
+       0.4686,
+       0.5779,
+       0.6766,
+       0.8396,
+       0.9359
+      ],
+      [
+       0.0235,
+       0.144,
+       0.2827,
+       0.3753,
+       0.5041,
+       0.6016,
+       0.6982,
+       0.7903,
+       0.9282
+      ],
+      [
+       0.0824,
+       0.1122,
+       0.244,
+       0.4111,
+       0.5041,
+       0.6613,
+       0.7264,
+       0.8625,
+       0.9151
+      ],
+      [
+       0.11,
+       0.1472,
+       0.3294,
+       0.3839,
+       0.5379,
+       0.65,
+       0.719,
+       0.7832,
+       0.93
+      ],
+      [
+       0.0429,
+       0.2046,
+       0.2334,
+       0.3513,
+       0.5273,
+       0.5634,
+       0.773,
+       0.8302,
+       0.9915
+      ],
+      [
+       0.01,
+       0.1288,
+       0.2445,
+       0.4099,
+       0.5394,
+       0.6049,
+       0.7291,
+       0.7909,
+       0.9146
+      ],
+      [
+       0.0864,
+       0.1551,
+       0.2379,
+       0.3907,
+       0.4886,
+       0.5653,
+       0.7412,
+       0.8779,
+       0.9704
+      ]
+     ],
+     "run_finished": "2026-10-09T17:55:29+05:30",
+     "model_seconds": 549.8
+    }
+   }
+  },
+  "lookalikes-both": {
+   "label": "Needle + 9 look-alike facts, question before and after the document (the fix)",
+   "by_length": {
+    "8192": {
+     "points": [
+      {
+       "depth": 0.0,
+       "correct": 9,
+       "n": 10,
+       "depth_actual_mean": 0.0,
+       "misses": [
+        {
+         "trial": 6,
+         "reply": "The cricket team's lucky jersey number this season is 880.",
+         "kind": "lookalike",
+         "said": "880",
+         "answer": "863"
+        }
+       ]
+      },
+      {
+       "depth": 0.1,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.0993,
+       "misses": []
+      },
+      {
+       "depth": 0.2,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.2005,
+       "misses": []
+      },
+      {
+       "depth": 0.3,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.2997,
+       "misses": []
+      },
+      {
+       "depth": 0.4,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.3998,
+       "misses": []
+      },
+      {
+       "depth": 0.5,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.4997,
+       "misses": []
+      },
+      {
+       "depth": 0.6,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.6008,
+       "misses": []
+      },
+      {
+       "depth": 0.7,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.7002,
+       "misses": []
+      },
+      {
+       "depth": 0.8,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.8006,
+       "misses": []
+      },
+      {
+       "depth": 0.9,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 0.9004,
+       "misses": []
+      },
+      {
+       "depth": 1.0,
+       "correct": 10,
+       "n": 10,
+       "depth_actual_mean": 1.0,
+       "misses": []
+      }
+     ],
+     "prompt_tokens": [
+      7990,
+      8145
+     ],
+     "trials": [
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ]
+     ],
+     "lookalike_pos": [
+      [
+       0.0854,
+       0.1537,
+       0.2499,
+       0.3749,
+       0.5532,
+       0.5739,
+       0.6719,
+       0.8109,
+       0.9748
+      ],
+      [
+       0.0631,
+       0.1205,
+       0.3016,
+       0.359,
+       0.4869,
+       0.6476,
+       0.7268,
+       0.8485,
+       0.8982
+      ],
+      [
+       0.0999,
+       0.1439,
+       0.2641,
+       0.3806,
+       0.5024,
+       0.6125,
+       0.6666,
+       0.8651,
+       0.9909
+      ],
+      [
+       0.0052,
+       0.1909,
+       0.3184,
+       0.3549,
+       0.4706,
+       0.5758,
+       0.6795,
+       0.8394,
+       0.9357
+      ],
+      [
+       0.0235,
+       0.144,
+       0.2827,
+       0.3753,
+       0.5041,
+       0.6016,
+       0.6982,
+       0.7903,
+       0.9282
+      ],
+      [
+       0.0826,
+       0.1125,
+       0.2445,
+       0.4119,
+       0.5051,
+       0.6597,
+       0.7255,
+       0.8643,
+       0.9171
+      ],
+      [
+       0.1101,
+       0.1474,
+       0.3299,
+       0.3845,
+       0.5387,
+       0.651,
+       0.7201,
+       0.7843,
+       0.9278
+      ],
+      [
+       0.0432,
+       0.206,
+       0.235,
+       0.3494,
+       0.5277,
+       0.567,
+       0.7692,
+       0.8356,
+       0.9954
+      ],
+      [
+       0.01,
+       0.1294,
+       0.239,
+       0.4058,
+       0.5385,
+       0.6055,
+       0.7285,
+       0.7922,
+       0.913
+      ],
+      [
+       0.0864,
+       0.1551,
+       0.2379,
+       0.3907,
+       0.4886,
+       0.5653,
+       0.7412,
+       0.8779,
+       0.9704
+      ]
+     ],
+     "run_finished": "2026-10-09T18:09:38+05:30",
+     "model_seconds": 596.3
+    }
+   }
+  }
+ },
+ "env": {
+  "machine": "Apple M5, 24 GB",
+  "os": "macOS-26.2-arm64-arm-64bit",
+  "mlx": "0.32.3",
+  "mlx_lm": "0.32.0",
+  "date": "2026-10-09T18:10:32+05:30"
+ },
+ "model_seconds_total": 1285.6
+}
