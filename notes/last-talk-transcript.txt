@@ -1,0 +1,580 @@
+[00:00] So how are you guys?
+[00:04] All good?
+[00:07] Alright, so in this session
+[00:11] Everyone understands how LLM works, yes or no?
+[00:16] Everyone understands, then let's go.
+[00:19] Alright, but do you actually understand what goes inside the LLM?
+[00:25] Have you heard about the dumb zone effect?
+[00:28] Context rot?
+[00:30] Context not, alright.
+[00:33] Have you heard about context engineering?
+[00:38] Again, a beautiful concept.
+[00:41] But how many of you deeply understand all this stuff?
+[00:44] In the sense, you can actually derive new concepts.
+[00:48] Or let's say a quick example.
+[00:50] How many of you have used coding agents?
+[00:53] Literally everyone.
+[00:55] And what do you think about them?
+[00:58] Alright, but still, if you're using coding agents, then you might also know that coding agents, it's very hard to steer them.
+[01:07] Sometimes you tell them, hey, you should do this, and coding agents are like, no, I won't do it at all.
+[01:12] And the next time, if you say, hey, don't do this, but it goes on and does its old stuff, and most of the time it's forgetting all,
+[01:20] it's very hard to control an AI agent right now, correct?
+[01:23] How many of you have that frustrating thing and how many of you have cursed an AI agent?
+[01:28] Can I get a raise of hands?
+[01:30] Alright.
+[01:32] Good.
+[01:33] So, do you actually know the reason that why even with the latest and greatest models out there,
+[01:41] Gemini 3.7 Flash, Fable saying, hey, I'm the AGI, and Sol saying, no, I'm the AGI.
+[01:49] And there's like different kind of benchmarks out there.
+[01:51] But still, there is a problem. Yes? Have you all felt that?
+[01:57] And how many of you have felt the amazing API pricing getting up to $200 in a one session?
+[02:04] All relatable?
+[02:07] And one more thing.
+[02:09] When you hit a prompt, or let's say you are just typing in the chat box,
+[02:13] Hey, I want to do something. Hey, Gemini, do this, this, this, and hit enter.
+[02:17] How many of you can actually forecast whether this particular prompt that I have given to the AI agent will work or not?
+[02:27] Can we predict it before even hitting the send button or enter button?
+[02:32] Can we do that?
+[02:39] Exactly.
+[02:40] Everything looks completely precis Vocêaris Left presence
+[03:10] these three basic laws, just three, you'll be able to deduce, oh, this is why my LLM is not working.
+[03:16] Or this is why, let's say you chat with an AI agent, the moment the project starts, everything is fine.
+[03:23] The moment you start vibe coding, vibe coding, vibe coding, just like four to five turns, your project is dead.
+[03:30] Right? Correct or not? So coming back to his point, even if you write every single thing in that prompt,
+[03:40] Still do you think it will work?
+[03:42] Let's say I write, hey I want to create a frontend, I want to create backend, I have written three prompts
+[03:47] and I gave three prompts. Frontend, backend, system, design, everything into one single prompt
+[03:52] and can you predict now it will work?
+[03:54] No.
+[03:55] No? Then what's the solution for it?
+[03:57] Weather API?
+[04:00] Weather API?
+[04:02] What is the weather API?
+[04:12] Weather means the weather API, right?
+[04:16] But the temperature doesn't have to be talked about
+[04:19] Okay, was I clear?
+[04:21] The temperature didn't work on all of the people's temperature
+[04:24] Okay, so what I was trying to tell is
+[04:27] If you have a project and you have all of it
+[04:30] Will you be still able to predict that?
+[04:33] Whether it's correct or not.
+[04:34] Cool.
+[04:35] So, that's what we are going to introduce right now.
+[04:40] Too many questions, right?
+[04:42] But, simple simple intuitions,
+[04:44] because everyday technology will change.
+[04:47] But these fundamental things will not change at all.
+[04:49] Because, and you might be seeing things like loop engineering, right?
+[04:54] Memory.
+[04:55] How many of you heard these things called memory is solved?
+[04:58] My AI has infinite memory and all these things.
+[05:02] But after this talk you'll get a better intuition that
+[05:05] hey these are some of the things
+[05:07] which can never be solved mathematically.
+[05:10] Forget about computer science.
+[05:11] These are some fundamental mathematical problems.
+[05:14] And yes, you don't research.
+[05:17] Don't fear.
+[05:19] But yeah.
+[05:20] All good.
+[05:22] Is it interesting?
+[05:25] If it's not interesting then we can change the agenda
+[05:27] It's like all of it's in my thoughts.
+[05:30] And the moment you predict, then I'll go on a change at that time.
+[05:33] Any other problem that you see with AI?
+[05:36] We have to move fast.
+[05:38] Because I have a time crunch of 35 minutes itself.
+[05:42] Any other problem that you see with AI or I covered it?
+[05:46] Covered it?
+[05:47] Who did you think it covered?
+[05:49] Can I get a raise of hands?
+[05:54] Alright, cool.
+[05:55] And how many of you have
+[05:56] at night 3 a.m. written some personal feelings to AI.
+[06:03] Hey AI, why he's not replying to me?
+[06:07] Can I reply that?
+[06:08] Can I reply this?
+[06:09] So, what you think, that AI understands your feeling, it doesn't.
+[06:15] Alright, it's all coded.
+[06:17] Alright, so a quick highlight about me.
+[06:19] Moving ahead, let's start with the most fundamental question of AI.
+[06:26] Alright.
+[06:26] Now we'll move from ground up. Even if you don't know anything about AI, you'll still be able to connect.
+[06:31] Number one, how many of you know about tokens?
+[06:34] What does tokens represent?
+[06:38] Vectors.
+[06:43] In simple sense, words. At bare minimum. We are just here for intuition.
+[06:48] Alright?
+[06:49] consumption of energy that AI use.
+[06:53] Yeah, the basic currency of AI is tokens, right?
+[06:58] Everyone understands that, right?
+[07:00] Now, moving from, so everyone understands,
+[07:03] so I won't go deep into the token,
+[07:05] but moving on top,
+[07:08] where does tokens live?
+[07:09] In the context window of the AI model.
+[07:14] Now, the first thing is,
+[07:16] Have you ever wondered that why your AI, and this is the answer to this, after a certain time,
+[07:25] or you might have seen this IQ kind of behavior, that in AI agents, IQ is relatively lower.
+[07:31] But let's say you are using Gemini CLI and Gemini App. In Gemini App, IQ is relatively higher,
+[07:38] but in Gemini CLI, IQ is relatively lower. Right? We have all seen that. That's why people go back
+[07:44] to the web interface to brainstorm and then came back to coding agent to do all
+[07:48] its stuff. Correct? But this problem is very fundamental. The fundamental problem
+[07:54] is if you see this graph that we have, this is called the dumb zone effect and
+[08:00] this graph is for Opus 4.8 and Gemini 3.7 flash. Alright? So if you see this
+[08:08] graph, your coding agents, you can just open your laptop and just see let's say
+[08:14] you are working with any coding agent and you can type slash context, right? And the
+[08:19] agenda, why I'm telling all this is because when you go to your companies, you
+[08:25] build AI agents. Companies not paying you for the coding agents you use. Companies
+[08:31] paying you for how much optimization you can do with a deterministic way or
+[08:38] deterministic nature of your AI pipelines so it gives a better output in
+[08:42] the lowest cost possible. That's the main motive. Correct?
+[08:49] That's the main motive. But whenever you have a coding or any coding agent that
+[08:56] coding agent starts with the crowded zone. Alright? And when you start with
+[09:03] normal coding agents or sorry when you start with chat interface they start
+[09:07] somewhere around here. So, if you see this green zone, this green zone is called the reasoning zone.
+[09:12] And the moment you start what's going inside the LLM brain, all right? Now, I'll tell you
+[09:17] why your four years of software, sorry, four years of bachelors is important.
+[09:24] All right? And why AI is not, AI will, with this architecture, I'm not talking about future,
+[09:31] With this architecture of transformers, why AI can never replace humans in terms of this
+[09:37] human in the loop kind of thing.
+[09:40] Now here's the thing, let's say I write this.
+[09:43] Alright, very simple thing, I hit enter and then, one second, alright, so now you can see
+[09:55] it's scanning and it knows where to go and it's going. Alright? So this is how an
+[10:03] actual LLM works. Now, a thing for you to understand. Whenever you say make a
+[10:11] website, alright, it just searches which cluster in which of this
+[10:16] embedding space because LLMs are in three categories. First is the inference
+[10:22] layer, then is the reasoning layer, and the last one is the embedding layer. All the knowledge that
+[10:27] you see in LLMs is at the embedding layer, and this is the embedding layer. Alright? Make sense?
+[10:33] Now, the problem with this embedding space is, and why I say, oh, you have to study, because you have
+[10:42] to gain your vocabulary. Alright? The problem is, if let's say, how many of your designers here?
+[10:48] okay one two got it and we are not all right so if you tell us hey make this website good
+[10:56] you know what's our vocabulary is to ai hey not looking good hey please make this better
+[11:01] hey please make this beautiful our whole vocabulary is just beautiful make it better
+[11:08] and do certain type of stuff right everyone agrees yes but to them they have a better version
+[11:18] of its vocabulary because they have studied in the design space. So they know what exactly to type.
+[11:24] So in simple sense, if you understand what an LLM is, it's just a compressed knowledge engine
+[11:30] that you have in your hand. And it's your responsibility to study your four years of
+[11:36] bachelor's and then hit the right keyword in this engine and get your answer. LLM says that,
+[11:43] hey, I know everything about the world, but my limitations are, first, you have to ask or get the right trigger words.
+[11:51] And second, I cannot connect the dots.
+[11:54] Because only a human can step back and see, oh, this is the problem and this is the bottleneck.
+[12:00] I should fix this rather than this.
+[12:01] But LLM doesn't have this kind of capability because it's a horse.
+[12:06] All right?
+[12:07] So keep this argument in mind.
+[12:09] and that's why we say, hey, in a skill file,
+[12:12] write your mistakes at the top
+[12:14] because in the middle you have this kind of internal knowledge
+[12:18] that will take care of it
+[12:19] and what is the objective function at the bottom.
+[12:23] Make sense?
+[12:25] Anything that you want to argue with?
+[12:30] I mean, I can be wrong.
+[12:35] Correct?
+[12:35] So, this visualization is clear.
+[12:38] So, what is an LLM?
+[12:39] LLM is a comp, so now you get the feel right that why certain people are able to make certain stuff
+[12:45] because they know the vocabulary. Same happened with you know recently AI was did a major breakthrough
+[12:51] in Jacobian conjecture. So if you don't know there was a conjecture in mathematics that was unsolved
+[12:56] and AI just did that all right and how it did that because the person who was operating
+[13:03] that particular AI, knew which exact polynomial or which cluster to target.
+[13:10] And that's how AI was able to retrieve the knowledge.
+[13:14] You got the gist that, okay, AI is good, but it's like an echo chamber,
+[13:21] where AI is as smart as the person using it. So if you don't know the right trigger keywords,
+[13:27] you'll not be able to make it. You can get somewhat there, but it's still
+[13:31] So, still all this clustering problem, that's unsolved.
+[13:40] By studying your four years of engineering.
+[13:42] By taking four years of engineering, you don't understand how the structure of that LLM is there.
+[13:48] But when we are prompting it, so in that prompt, what word will actually be the most important?
+[13:54] Is it going to be just the technical jargon that we, in that particular domain?
+[13:59] Exactly. So that's the jargon. But if anyone has noticed, AI works like this, right?
+[14:08] But if I do any other keyword, let's say
+[14:18] Let's say I did this keyword. Alright, it went back and then it went to a different cluster
+[14:27] It's not showing so bad on my screen. I'm saying so.
+[14:33] It's a lot of lacking.
+[14:35] Okay.
+[14:36] So now you got a gist that it went to a different cluster.
+[14:40] Alright?
+[14:41] And that's the answer to your question.
+[14:44] Because the moment you feed multiple things into AI,
+[14:50] that hey, build my front end, build my back,
+[14:51] and build my this, build my that.
+[14:53] Alright?
+[14:53] What AI has to do,
+[14:55] it has to activate multiple clusters.
+[14:58] Alright?
+[14:59] And there is a basic Funda rule.
+[15:01] The basic rule is,
+[15:03] if you try to trigger multiple clusters,
+[15:04] it has to retrieve from multiple different embeddings, that's why you shed the tension
+[15:10] that's working inside the model, that fails, then the dumb zone effect triggers, that fails,
+[15:16] and when you have to trigger like multiple different vectors in multiple different directions,
+[15:20] their average is taking out, and then you end up nowhere. And that's why you see if you give a very
+[15:26] big prompt, let's say you want to do AI build my front end and also do the sales, it will not do
+[15:32] any single thing at once. You might have also seen that if you give AI a bunch of different
+[15:36] requirements and do this, it will do high level of all those things. But if you just really pinpoint
+[15:40] at that particular feature, it will make that feature like the best. And why? Because when you
+[15:45] give, let's say, hey, make the authentication page, it will go to the right cluster where
+[15:52] authentication is defined and all the rules and logics are defined. And through that, it will
+[15:57] able to get the right information or retrieval to you. So it's like the most fundamental problem
+[16:04] in computer science is not this cheap this that etc etc. It's all about search. If you really think
+[16:11] about it all the big companies that's there around the world they solve the most they keep solving the
+[16:17] most fundamental problem of computer science that is search. Instagram best recommendation for reels
+[16:24] or friends, people search engine, Google knowledge search engine, Netflix movie search engine, right?
+[16:32] Every single company who made big was because of this searching kind of algorithm. So if you really
+[16:39] see AI has relatively solved the search, but still it's worse than Google. Why? Because Google can tell
+[16:46] you all the stuff, but why it's best than Google? Because if you know the right trigger words,
+[16:50] then you have to do that. But the cycle is to get the right trigger words you have to study from Google.
+[16:55] Right? Make sense? And that's why you have to study. Because if you don't study,
+[17:04] I don't want to go into deep into that but the crux of this understanding is
+[17:09] U-shaped retention, dumb zone will keep triggering. There is no way you can solve that
+[17:14] because that's a fundamental problem of math not computer science. Then you have to craft your skill
+[17:20] Now you see everything that's out there, loop engineering, this starts making sense right now.
+[17:25] Because everything is derived from three fundamental concepts that I just showed you.
+[17:29] And from here, whenever you keep sending a prompt, you'll have an intuition from get go,
+[17:35] that why before sending enter or before even making your AI pipelines,
+[17:40] you'll be able to know, okay, why this will not work because of these fundamental problems.
+[17:45] And to cater these fundamental problems, there are fundamental solutions as well.
+[17:50] such as phased prompting.
+[17:53] Alright, so
+[17:54] if you see this
+[17:58] diagram
+[17:59] where is the diagram?
+[18:04] One second.
+[18:07] Alright, so this diagram
+[18:09] you should actually structure your prompt
+[18:12] in three simple ways.
+[18:16] Input,
+[18:17] outcome, output expectation
+[18:19] and validation layer.
+[18:20] This basically means that whenever you are writing prompt, to get the most out of that prompt, you have to write it in this way.
+[18:27] Input Output Expectation. What this does?
+[18:29] What this do to your AI agent? First of all, input, it can be anything. Let's take an example.
+[18:34] Input, you want to make, let's say, landing page. Alright?
+[18:37] Then, what is an outcome? Okay, landing page is kind of a taste-based. Let's say you want to build the fastest inference engine.
+[18:45] Let's say, you heard about Light RT, right? Light RT, you have heard?
+[18:50] Let's make an engine that's better than LightRT.
+[18:53] Alright? We will create an engine that's better than LightRT.
+[18:56] If you actually give this prompt, it will actually work.
+[18:58] Alright? So input is, hey we have LightRT and we want to
+[19:01] make this faster. That's your input. Outcome should be a metric.
+[19:05] It can be any metric that you also do. Let's say for design people,
+[19:08] it can be some sort of metric such as color, color, hue or something.
+[19:11] I don't know at all. So pardon me. Just forgive me if I say anything wrong.
+[19:14] But it can be any metric, right? You guys have it in mind.
+[19:18] For AI research, it's like the number of metrics that we have.
+[19:20] Let's say we have outcome, let's say I want to make
+[19:24] LightRT an engine that's 50% faster.
+[19:27] Alright?
+[19:27] And the validation layer is basically how you validate.
+[19:31] Alright, so I can validate it by running the LightRT.
+[19:34] So that can be one prompt, and it's very focused prompt.
+[19:38] Alright?
+[19:39] To one specific region of LightRT, let's say I want to
+[19:42] improve the KV cache or something else.
+[19:44] If you don't know about KV cache, just remember why there's nothing.
+[19:48] But in simple terms, KV cache is like ongoing topics, but imagine this thing that there is a system which is faster.
+[19:57] Right? So in that case you have to write in this prompt, one focus prompt.
+[20:01] Now, this will create an internal loop inside the LLM, until this validation is achieved, and that's a line you write.
+[20:08] Until this particular outcome is achieved, you have to write this. Alright? Any questions? Till here?
+[20:16] But you can actually write multiple different prompts simultaneously.
+[20:23] Input, input, input.
+[20:25] And these are the concept of sub-agents.
+[20:28] That you have one agent controlling multiple sub-agents
+[20:30] and in multiple sub-agents you have input, output, and validation.
+[20:33] Alright?
+[20:34] Until that validation loop hits,
+[20:36] until that outcome is achieved,
+[20:37] you keep trying.
+[20:39] Alright?
+[20:40] Got it?
+[20:41] And that's why you shouldn't, you know,
+[20:43] at 3am
+[20:45] write to chat GPT
+[20:46] hey
+[20:47] chat GPT
+[20:49] that guy left me
+[20:51] that girl left me
+[20:54] and you know why
+[20:55] because the moment you write that
+[20:57] it will go to the
+[20:57] reddit cluster
+[20:59] and it will say
+[21:02] oh
+[21:02] very sorry
+[21:03] in this case
+[21:05] you have to leave
+[21:06] you have to forget about her
+[21:08] or him
+[21:09] and that's
+[21:11] and that's why because
+[21:12] all these things come from the cluster not because chat GPT or Claude or Gemini understands you
+[21:18] all right sorry okay okay got it so you got the gist that what actually happens it's just
+[21:28] replaying the conversation that somebody else had on the internet that hey when someone writes this
+[21:35] you're supposed to reply like that without understanding any context that you have and
+[21:39] And then it just provides you the replayed conversation of someone else who had that with
+[21:45] human to human.
+[21:47] How embarrassing is that?
+[21:50] That you are replaying a conversation of some people on the internet and validating your
+[21:56] feelings.
+[21:57] And that's why I always take professional help for these things.
+[22:01] But coming to the, apart from my bad jokes, coming to the concept, input out of validation,
+[22:07] Now you can keep running these three things together, but...
+[22:11] Okay, what is that thing?
+[22:15] How many of you are coding agents?
+[22:17] So whenever context limit hits, what triggers inside the hardness?
+[22:23] Compact? Amazing.
+[22:25] Have you heard of compact?
+[22:27] Compact basically says that, hey, if I am over here,
+[22:33] and my context window is just 160K,
+[22:37] if I hit compact, I'll go back to 94 or I'll go back to 32K tokens.
+[22:43] Why? Because it just summarizes all the conversation again.
+[22:46] But in that summarization, everything is
+[22:49] lost.
+[22:50] Because it's a summarization.
+[22:52] Most of the context,
+[22:53] do not do this, do not do that, is lost.
+[22:57] So what you should do here?
+[22:58] What is the intuition?
+[23:00] And the answer is in the RLHF.
+[23:03] The U-shaped attention.
+[23:05] What you should do to be able to basically overcome this.
+[23:09] Think about it. Your brains are not smooth.
+[23:13] Basically there is research that if you don't think your brains are,
+[23:16] your brain curvatures become smooth and smoother.
+[23:18] And that's what called brain rotting or brain rot content.
+[23:22] That's why you're not able to give me the full attention.
+[23:26] In between your attention is also U-shaped.
+[23:28] Only my jokes, my bad jokes you are able to remember.
+[23:35] So here also the three fundamental concepts that I told you, the moment you compact, before
+[23:42] that, because RLHF is handling whatever is there on the internet, we don't have to worry
+[23:47] about what to do, we have to worry about what not to do.
+[23:50] That's why you just say at the very first line that hey whatever critical mission or
+[23:55] critical operation that you are doing and why I'm saying this to write critical because I have
+[24:01] already experimented with hey what is important write all that down and AI is like hey everything
+[24:07] is important I'll write everything down all right and that's why this again becomes the dumb zone
+[24:12] effect because everything is written AI reads everything and just forgets and that's why you
+[24:16] have to and then how did I arrived at that critical mission keyword is because there is subject call
+[24:23] software development lifecycle in the second year of college and then in that subject it's written
+[24:28] that there is a mission critical operations or mission critical code that stays untouched
+[24:33] and that's why you should just give that hey only log mission critical stuff it works.
+[24:39] Why? Because of that keyword. So that's why I call these or you have to study because these keywords
+[24:46] that you have let's say mission critical or something are the activation keyword or activation
+[24:51] function for the LLM. Right? If you can think that way, that to trigger specific prefrontal cortex
+[25:00] of LLM or something like that, you have to give it certain type of keywords until it will not
+[25:05] understand what you're trying to say. You got it? And that's why you have to keep asking LLMs all
+[25:11] the questions. So you got the gist over here, right? Like what's the problem? So that's why you keep
+[25:17] compacting and before compacting you write all the mission critical things over there that's why in
+[25:22] this second layer of the harness this particular here this prod actions basically says that hey
+[25:29] whatever is important keep sharing along with the agents at the very first of the context and that's
+[25:35] why this systems called as memory was evolved memory systems because ai was keep like ai whenever
+[25:41] you start a new session it just forgets everything all right that's why you have the systems called
+[25:46] memory systems. And what they claim is not memory. They basically claim that if we have a memory
+[25:53] storage, I can retrieve it for you if the right keyword is triggered in my memory system. But the
+[25:59] main question is that what are those right keywords? AI doesn't know. And that's why memory
+[26:06] is unsolved. You got the gist? I'll repeat it again because it's a million dollar problem.
+[26:12] They say AI memory is solved but our intuition towards AI memory is kind of, I would say scrutinized.
+[26:21] Because AI memory was supposed to solve memory problems with for AI.
+[26:26] But the problem is we have AI memory that's essentially a vector database.
+[26:30] When you want to access a vector database you have to trigger the right keywords.
+[26:34] But those right keywords AI doesn't know.
+[26:36] And who triggers those right keywords?
+[26:38] The LLM.
+[26:40] LLM doesn't know that these are the right keywords and that's why the mem- it's not able to get to the correct memory location and that's why
+[26:47] it's not been able to
+[26:49] again collate what was the previous conversations that we had
+[27:00] What are those correct keywords? How we will create a function that
+[27:10] If you have a cursor number, it's called cover animation.
+[27:13] Yeah.
+[27:14] I just...
+[27:14] So you use the cover animation.
+[27:18] Correct.
+[27:20] But you are thinking in terms of only one memory node.
+[27:24] In a software or in a company like Google, Microsoft, this, that,
+[27:28] the amount of documentation you have is enormous.
+[27:33] Right?
+[27:35] Even in your companies, if you go to any startup,
+[27:37] within just six months, they have created enough knowledge
+[27:40] that memory system starts failing.
+[27:42] Because of the amount of documentation.
+[27:44] And now with AI,
+[27:45] it's like,
+[27:48] write this code,
+[27:49] write the documentation.
+[27:50] Write this code,
+[27:50] write the documentation.
+[27:51] So it's like with AI,
+[27:53] you keep saying this again and again
+[27:54] and AI writes like,
+[27:55] AI doesn't write all the critical,
+[27:57] it writes everything.
+[27:58] All the things from the scratch.
+[28:00] If you tell it to create like a website,
+[28:02] it will start writing ReactJS from scratch.
+[28:04] So that's the problem.
+[28:07] Alright.
+[28:08] So you got the gist?
+[28:10] of YI memory. So the problem of memory is not to solve the search and retrieval, that's already solved, that vector space.
+[28:18] The problem with AI memory is how do you find these right keywords so that it can be retrieved from the vector database.
+[28:26] That is the question we need to ask when building AI pipelines.
+[28:32] And this whole thing is actually called loop engineering.
+[28:37] This thing. This is called loop engineering.
+[28:40] Now you know why loop engineering fails.
+[28:43] Because we don't know the right keywords. People are saying, hey create chat GPT 7.
+[28:48] It will not because it doesn't know at all what are the things.
+[28:52] Because if you really see what goes into, you say hey create chat GPT 7, it will go to the chat GPT
+[28:57] cluster. It has some knowledge around that and it will keep playing in that knowledge structure
+[29:01] itself. It doesn't know what to do something else. Because of the previous tokens that it had.
+[29:06] humans can do, take one step back and see oh the problem is not in computer science
+[29:12] the problem is in cognitive research I should look at this cluster and then try to translate
+[29:18] these ideas into computer science to be able to create new solutions got it and that's why
+[29:24] and this whole thing is called harness and this is a production system that you have all right
+[29:31] So these are all the things that you can trigger. So this is my Kaggle notebook so this is one thing
+[29:43] and this is another graph. Now you will be able to understand all this because I don't want to
+[29:48] make it overwhelming. So now you can see here is the retrieval, you can see the structure U-shaped,
+[29:53] right? Make sense? The U-shaped structure that we have, everything mechanism, middle in the behavior,
+[30:00] Now you can see here, like this is literally U-shaped.
+[30:05] This is what we call the U-shaped attention.
+[30:08] And that's, those are the tokens in, I don't know if you are able to see.
+[30:17] This middle unwanted layers are tokens to which AI model is not paying attention.
+[30:25] So AI model doesn't know what's there.
+[30:27] Alright, because of the attention mechanism.
+[30:30] it? And these are all the things. So these are the red patches or the needle in the haystack kind of
+[30:35] things that you keep hearing. And now you know what actually they are. All right. So these are all the
+[30:43] things that I wanted to talk to you about. But in a nutshell, now when you go to your companies,
+[30:53] what's the first thing that you'll do is basically see the bottlenecks. Okay. Whether our bottleneck
+[30:59] is model or because models are smart, all right, then the problem might be in your approach of
+[31:07] using the model. So whenever you start using a model or making AI pipelines, just keep asking,
+[31:13] okay, I have written the skill file because you have to write it. Is this skill file too long?
+[31:18] If it's too long or whether the skill file is targeting just one cluster. If it does,
+[31:23] then it's good. If it doesn't, then split that file.
+[31:27] And I call this as a
+[31:28] It's not a snap
+[31:30] It's like it's a snap
+[31:32] 
+[31:32] It's like it's a snap
+[31:33] Did you play a snake game or Nokia?
+[31:35] Nokia Snake Game
+[31:37] So whenever you want to do a consecutive task in like a sequential fashion
+[31:43] What you do is you input your task
+[31:47] You add the output, you add the validation
+[31:49] And whatever is the output of the first task
+[31:52] that goes as input to the next task.
+[31:54] And this way AI model is coherent between the tasks.
+[31:58] And it will not use shortcuts because at one time we have only given one task to the AI agent.
+[32:05] And the next time when it sees the next task, it will know,
+[32:08] oh, in the first, this is the output, I should use that to invoke the next task.
+[32:13] Got it?
+[32:14] So these are all the items that I wanted to discuss about.
+[32:17] Any questions?
+[32:22] So, if you start deep into AI, the question might be very beginner level.
+[32:26] That's fine, everything was beginner level here.
+[32:28] Yeah, you talked about keywords.
+[32:31] You said if you don't know the correct keywords,
+[32:34] how do you get the required output?
+[32:36] What if I get the keywords out from AI, AI, A, and then click that into AIB, which is my main AI.
+[32:45] Yeah, that will work, that's what we call as planning.
+[32:49] Vector database of those keywords as well.
+[32:52] So your question is what if we get those keywords from AI model A?
+[32:56] Yeah, whatever.
+[32:57] And what you'll write in AI model A.
+[32:59] I'll be getting from my Bnet.
+[33:00] What you'll write in AI model A to get those keywords out?
+[33:04] Simpler language.
+[33:06] Exactly. There is a bottleneck.
+[33:08] If you write, hey give me all the, you can just write out in AI model.
+[33:12] Give me all the jargon words to be able to make chat chat GPT.
+[33:17] I've tried that out but at a very basic level
+[33:19] Yeah, that will be a basic stuff, right?
+[33:22] Yeah
+[33:23] So, maybe it's the same answer to his question that
+[33:26] this is very basic and bigger companies
+[33:28] So, that might be the answer
+[33:31] So, that's the answer
+[33:33] The answer is
+[33:34] The first step
+[33:36] The first step you will write a very basic prompt
+[33:38] Hey, I want to create chat GPT-7
+[33:40] Just go to
+[33:42] Even if you write, hey, go all over internet
+[33:44] And give me the right keywords
+[33:46] At max it will say transformers, ReLU, Softmax, then it will talk about loop transformers, this that etc.
+[33:52] Alright? Then you take those jargon words and you put that into another.
+[33:56] And at max it will go to the same clusters of transformers, this that.
+[33:59] And it will keep progressing even if you do it for infinite times.
+[34:06] Exactly. And it's actually worse.
+[34:09] Because you ask the right keywords, it will give you 7 keywords in 7 different directions.
+[34:15] Seven different clusters are being hit and you get the degraded response from even if you just write on like chat GPT-7
+[34:22] it would be better than writing hey create chat GPT-7 using these architectures.
+[34:28] But what do you say to provide the document of that code?
+[34:35] If you provide the document that has all the answers written inside then that document is generated by human not an AI.
+[34:42] Like you mentioned that every time we are building something, we are also documenting using AI
+[34:49] and it is always doing from a big stretch.
+[34:52] Okay, you are saying while developing we create documentation as well
+[34:56] and then we do the next thing. You know we had done that already.
+[35:01] And that's why all these experiences coming from that drastic failures.
+[35:06] Even we tried that. We wrote an AI engine for like six months.
+[35:11] we said that hey, now AI will handle everything because AI can create documentation, AI can write code.
+[35:15] After six months we have to rewrite the whole code base.
+[35:18] And you know what was the major challenge?
+[35:20] AI was not able to comprehend its own comments.
+[35:24] Why? Because of the dumb zone effect.
+[35:28] These concepts are three, but it answers a lot of questions around AI, across AI.
+[35:34] And that's why we were not able to do that.
+[35:37] and that's why we have to keep looking at every single engine
+[35:40] keep.. now we don't do that at all
+[35:42] because we tried it once, 6 months, into the line
+[35:45] many bugs, AI told that it will solve
+[35:48] so what meme comes from?
+[35:50] there is a meme on Instagram
+[35:53] I will give you, why don't you do it?
+[35:56] so that's the meme that you get
+[35:59] after coding like 6 months with AI and then rewriting the whole codebase
+[36:02] so if you want to connect with me, so this is my website
+[36:06] systems, okay I'll just write it down and all of my highlights
+[36:11] yeah, they didn't have done that for the professor to give me a call
+[36:20] I'm like, I'm really enjoying it
+[36:25] so this is my Instagram or like anywhere the handle is this and my website is this all the
+[36:34] thing that you see on the all the things that you see across the stuff is either on
+[36:39] this handle or either on this Instagram channel or even the Kaggle notebook that
+[36:44] I showed through which you can fundamentally reduce any AI model
+[36:47] capabilities is also in that Kaggle. So I think that's all from my side and I
+[36:54] hope that has provided a better intuition and a new way of thinking into
+[36:59] AI models rather than just sticking to skill files and stuff.
+[37:04] Alright?
+[37:06] Cool!
+[37:09] I don't know if you're going to get mad.
+[37:11] You're going to get mad.
+[37:13] Alright, so in the end we'll do one.
+[37:17] So in the end, after every talk, I'll do one thing.
+[37:21] Is we shout the event name.
+[37:23] We have energy?
+[37:25] Yes!
+[37:26] Do we have energy?
+[37:27] Yes!
+[37:29] Do we have energy?
+[37:30] Yes!
+[37:31] Alright, so...
+[37:33] Cloud extended?
+[37:35] Google, are you extended?
+[37:36] Yeah.
+[37:37] Alright, cool.
+[37:38] So, on the count of three, we'll do...
+[37:41] Let's do a...
+[37:43] How about those go? Testing. Let's do a QA test.
+[37:46] Before going to production.
+[37:49] So...
+[37:50] What we'll say?
+[37:53] Google, I have extended New Delhi.
+[37:55] Alright.
+[37:56] So, three, two, one!
+[37:59] Google Ads!
+[38:00] All right.
+[38:03] So now let's move to production.
+[38:05] All right.
+[38:06] So, three, two, one!
+[38:09] Google Ads!
+[38:11] All right.
+[38:13] Thank you, guys.
+[38:14] Thank you so much.
