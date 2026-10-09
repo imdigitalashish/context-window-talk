@@ -7,10 +7,14 @@
 // strong: the midpoint between the scattered preset's Focus and the focused preset's Focus, so a
 //         focused prompt's top bar clears it and a scattered prompt's doesn't.
 //
+// Existing thresholds that are still feasible are kept (so re-running this after adding a preset
+// does not silently move them); pass --reset to recompute both from scratch.
+//
 // Then run `node demo/test-engine.mjs --write` to regenerate demo/data/presets.results.json.
 import { readFile, writeFile } from 'node:fs/promises';
 import * as engine from '../demo/engine.js';
 
+const RESET = process.argv.includes('--reset');
 const DEMO = new URL('../demo/', import.meta.url);
 const MAP_FILE = new URL('data/map.json', DEMO);
 const CHITCHAT = ['hello', 'hi', 'thanks', 'ok do it', 'can you help me', 'what is the capital of France'];
@@ -51,19 +55,26 @@ if (lo >= hi) {
 }
 if (lo >= hi) throw new Error(`no feasible touch threshold: need > ${lo} and <= ${hi}`);
 
+const map = JSON.parse(await readFile(MAP_FILE, 'utf8'));
+const current = map.thresholds ?? {};
+
 let touch = Math.round(((lo + hi) / 2) * 100) / 100;
 if (!(touch > lo && touch <= hi)) touch = Math.round(((lo + hi) / 2) * 1e4) / 1e4;
+const keepTouch = !RESET && current.touch > lo && current.touch <= hi;
+if (keepTouch) touch = current.touch;
 
-const focused = presets.find((p) => p.expect.touchedExactly);
 const scattered = presets.find((p) => p.expect.focusBelow);
-const strong = Math.round(((results[focused.key].whole.top.sim + results[scattered.key].whole.top.sim) / 2) * 100) / 100;
+const focused = presets.find((p) => p.key === scattered.expect.focusBelow.key);
+const [fLo, fHi] = [results[scattered.key].whole.top.sim, results[focused.key].whole.top.sim];
+let strong = Math.round(((fLo + fHi) / 2) * 100) / 100;
+const keepStrong = !RESET && current.strong > fLo && current.strong < fHi && current.strong > touch;
+if (keepStrong) strong = current.strong;
 
-console.log(`touch:  feasible (${lo.toFixed(4)}, ${hi.toFixed(4)}]  -> ${touch}`);
+console.log(`touch:  feasible (${lo.toFixed(4)}, ${hi.toFixed(4)}]  -> ${touch}${keepTouch ? ' (kept)' : ''}`);
 console.log(`        lower bound: ${why.lo}`);
 console.log(`        upper bound: ${why.hi}`);
-console.log(`strong: between scattered Focus ${results[scattered.key].whole.top.sim} and focused Focus ${results[focused.key].whole.top.sim} -> ${strong}`);
+console.log(`strong: between scattered Focus ${fLo} and focused Focus ${fHi} -> ${strong}${keepStrong ? ' (kept)' : ''}`);
 
-const map = JSON.parse(await readFile(MAP_FILE, 'utf8'));
 map.thresholds = { touch, strong };
 await writeFile(MAP_FILE, JSON.stringify(map));
 console.log(`wrote thresholds to ${MAP_FILE.pathname}`);

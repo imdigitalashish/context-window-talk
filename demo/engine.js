@@ -11,6 +11,7 @@ const MODEL_ID = 'Xenova/all-MiniLM-L6-v2';
 const DIMS = 384;
 const K = 12; // neighbours for the kNN part vote and the landing position
 const XYZ_TEMPERATURE = 0.05; // softmax(sim / T) weights for the landing position
+const CENTROID_MARGIN = 0.03; // a part whose centroid is this much closer overrides the kNN vote
 
 const IS_NODE = typeof process !== 'undefined' && !!process.versions?.node && typeof window === 'undefined';
 const DEFAULT_BASE = new URL('./', import.meta.url); // the demo/ directory
@@ -106,9 +107,11 @@ export async function score(prompt) {
   const clauses = [];
   for (const text of splitClauses(prompt)) {
     const q = await embed(text);
-    const { part, xyz } = locate(q);
-    const sim = round(dotCentroid(q, partIds.indexOf(part)));
-    clauses.push({ text, part, sim, xyz, xy: xyz.slice(0, 2), touched: sim >= touch });
+    const { voted, xyz } = locate(q);
+    const sims = partIds.map((_, p) => dotCentroid(q, p));
+    const part = choosePart(sims, voted);
+    const sim = round(sims[part]);
+    clauses.push({ text, part: partIds[part], sim, xyz, xy: xyz.slice(0, 2), touched: sim >= touch });
   }
   const partsTouched = [...new Set(clauses.filter((c) => c.touched).map((c) => c.part))];
 
@@ -272,7 +275,16 @@ function dotCentroid(q, p) {
   return s;
 }
 
-// kNN over the corpus: the part with the most similarity-weighted votes among the K nearest
+// A clause's part is the kNN vote, unless another part's centroid is closer by CENTROID_MARGIN or
+// more: many weak neighbours from one part can outvote a clearly closer part ("create me ai model":
+// Writing.SE titles outvote ml by count, while ml's centroid is 0.047 closer).
+function choosePart(sims, voted) {
+  let best = voted;
+  for (let p = 0; p < sims.length; p++) if (sims[p] > sims[best]) best = p;
+  return sims[best] - sims[voted] >= CENTROID_MARGIN ? best : voted;
+}
+
+// kNN over the corpus: the part index with the most similarity-weighted votes among the K nearest
 // points, and the landing spot = softmax(sim / T)-weighted mean of their 3-D positions.
 function locate(q) {
   const n = map.points.length;
@@ -299,7 +311,7 @@ function locate(q) {
     const pt = map.points[topIdx[j]];
     wsum += w; x += w * pt.x; y += w * pt.y; z += w * (pt.z ?? 0);
   }
-  return { part: partIds[part], xyz: [round(x / wsum), round(y / wsum), round(z / wsum)] };
+  return { voted: part, xyz: [round(x / wsum), round(y / wsum), round(z / wsum)] };
 }
 
 const round = (v) => Math.round(v * 1e4) / 1e4;

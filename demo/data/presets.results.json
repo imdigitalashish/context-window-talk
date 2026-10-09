@@ -385,6 +385,98 @@
      ]
     }
    }
+  },
+  {
+   "key": "5",
+   "name": "Mixed",
+   "prompt": "create me an ai model and a react website for it and also why isn't she texting me?",
+   "result": {
+    "clauses": [
+     {
+      "text": "create me an ai model",
+      "part": "ml",
+      "sim": 0.305,
+      "xyz": [
+       0.5243,
+       0.6104,
+       0.2331
+      ],
+      "xy": [
+       0.5243,
+       0.6104
+      ],
+      "touched": true
+     },
+     {
+      "text": "a react website for it",
+      "part": "react",
+      "sim": 0.6137,
+      "xyz": [
+       0.268,
+       0.135,
+       0.1852
+      ],
+      "xy": [
+       0.268,
+       0.135
+      ],
+      "touched": true
+     },
+     {
+      "text": "why isn't she texting me?",
+      "part": "interpersonal",
+      "sim": 0.2622,
+      "xyz": [
+       0.1903,
+       0.8713,
+       0.224
+      ],
+      "xy": [
+       0.1903,
+       0.8713
+      ],
+      "touched": true
+     }
+    ],
+    "partsTouched": [
+     "ml",
+     "react",
+     "interpersonal"
+    ],
+    "whole": {
+     "sims": {
+      "react": 0.3583,
+      "css": -0.0216,
+      "auth": 0.0508,
+      "postgres": -0.0711,
+      "docker": -0.0188,
+      "payments": 0.0126,
+      "ml": 0.2167,
+      "android": 0.0888,
+      "testing": -0.0306,
+      "ux": 0.1831,
+      "security": 0.1342,
+      "writing": 0.2303,
+      "law": 0.0377,
+      "money": 0.1165,
+      "interpersonal": 0.2994,
+      "cooking": 0.0098
+     },
+     "top": {
+      "part": "react",
+      "sim": 0.3583
+     },
+     "xyz": [
+      0.2412,
+      0.5331,
+      0.1971
+     ],
+     "xy": [
+      0.2412,
+      0.5331
+     ]
+    }
+   }
   }
  ]
 }

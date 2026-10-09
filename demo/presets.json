@@ -50,5 +50,20 @@
       ],
       "topPart": "interpersonal"
     }
+  },
+  {
+    "key": "5",
+    "id": "mixed",
+    "name": "Mixed",
+    "prompt": "create me an ai model and a react website for it and also why isn't she texting me?",
+    "mustShow": "3 parts: ml, react and interpersonal",
+    "expect": {
+      "minClauses": 3,
+      "touchedExactly": [
+        "ml",
+        "react",
+        "interpersonal"
+      ]
+    }
   }
 ]

@@ -23,7 +23,7 @@ The page uses a 1920×1080 stage, scaled to fit the window exactly as `deck/inde
 - **Left (~62%):** the knowledge map, a **3-D point cloud rendered with Three.js**. About 2,000 points, each a real question, coloured by part, with each part labelled at its centroid.
 - **Right (~38%):** the prompt panel.
 
-The speaker picks a preset (keys 1–4) or types a prompt and presses Enter. Then:
+The speaker picks a preset (keys 1–5) or types a prompt and presses Enter. Then:
 
 1. The prompt splits into **clause chips**.
 2. Each clause **travels to the spot on the map where it lands**, drawn as a line from the chip to the map. Touched parts light up and the others dim.
@@ -41,6 +41,7 @@ You may adjust the wording slightly while calibrating, but keep each preset's in
 | 2 | Scattered | `Build my React frontend, set up the Postgres database, add Google login, integrate Stripe payments, write the landing page copy, deploy it with Docker and make it look beautiful.` | ≥ 5 parts, and a visibly lower Focus than preset 1 |
 | 3 | Negation | `Build a simple admin dashboard. Don't use React.` | The React part still lights up |
 | 4 | 3 AM | `why is he not replying to my messages, should I text him again?` | The relationships (interpersonal) part |
+| 5 | Mixed | `create me an ai model and a react website for it and also why isn't she texting me?` | 3 parts: ml, react and interpersonal (the speaker's own live prompt, with "an" and "react" added) |
 
 ## Files and ownership (both sessions share one checkout)
 
@@ -76,7 +77,7 @@ export function onProgress(cb)                    // optional: cb({ stage: 'mode
 ```
 
 - `splitClauses` splits on sentence ends, newlines, bullets, `;`, and on `, and` / ` and ` / ` also ` / ` plus ` / ` then ` between imperative clauses. Keep a negation attached to its object: "Don't use React" stays one clause. Drop empty clauses and clauses of fewer than three characters.
-- **Clause part.** Use the nearest part by kNN vote: take the 12 nearest corpus points by cosine similarity, weight each by its similarity, and pick the part with the most weight. `sim` is the clause's cosine similarity to that part's centroid. Use kNN rather than a raw centroid argmax because it is more robust.
+- **Clause part.** Use the nearest part by kNN vote: take the 12 nearest corpus points by cosine similarity, weight each by its similarity, and pick the part with the most weight. If another part's centroid is closer to the clause than the voted part's centroid by 0.03 or more (cosine similarity), use that part instead. `sim` is the clause's cosine similarity to the chosen part's centroid. Use kNN rather than a raw centroid argmax because it is more robust. The centroid override handles the case where many weak neighbours from one part outvote a clearly closer part: for "create me ai model" the vote picks writing (0.252), but ml's centroid is closer (0.299).
 - **`xyz`.** The weighted average of the 3-D positions of the clause's 12 nearest points, with weights of softmax(sim / 0.05). All coordinates are in [0,1], the same space as `points`. `xy` is kept for compatibility and is simply the first two coordinates of `xyz`.
 
 ## `demo/data/map.json`
@@ -98,7 +99,7 @@ export function onProgress(cb)                    // optional: cb({ stage: 'mode
 
 - The vectors are stored in `demo/data/vectors.i8`, in the same order as `points`.
 - Keep `map.json` and the vectors together under about 3 MB.
-- `demo/data/presets.results.json` holds the precomputed `score()` output for the four presets. The UI falls back to it if the model can't load.
+- `demo/data/presets.results.json` holds the precomputed `score()` output for the presets in `demo/presets.json`. The UI falls back to it if the model can't load.
 
 ## Engine requirements
 
@@ -113,7 +114,7 @@ export function onProgress(cb)                    // optional: cb({ stage: 'mode
   - If the API is unavailable, generate synthetic titles, set `source` to "synthetic", and tell the coordinator.
 - **3-D layout.** Use UMAP with `n_components=3` and a cosine metric, or similar. Normalise each axis to [0,1] with padding. The parts should form readable islands in 3-D.
 - **Calibration.**
-  - Pick `thresholds.touch` so that all four presets behave as the table above requires.
+  - Pick `thresholds.touch` so that all presets behave as the table above requires.
   - `node demo/test-engine.mjs` prints a results table and exits non-zero if any preset fails.
   - Append a **Calibration** section to this file with the thresholds, the preset results table, and a cosine-similarity check of "Use React for the UI" against "Don't use React for the UI" (the negation evidence).
 
@@ -128,7 +129,7 @@ export function onProgress(cb)                    // optional: cb({ stage: 'mode
   - Render the points in 3-D (instanced points or sprites, about 2,000 of them), with slow auto-rotate and OrbitControls. Show part labels as billboards or CSS2D labels at the centroids.
   - On run, touched parts brighten or grow while the others dim. Each clause travels in 3-D from the prompt panel to its `xyz`, with a trail line, and the whole-prompt point is shown too.
   - Vendor three.js locally in `demo/ui/vendor/` so it works offline with no CDN. `demo/vendor/` belongs to the engine.
-- **Stage and keys.** Use the same 1920×1080 stage scaling as the deck. Keys: `1`–`4` presets, `Enter` run, `Esc` clear, `F` fullscreen.
+- **Stage and keys.** Use the same 1920×1080 stage scaling as the deck. Keys: `1`–`5` presets, `Enter` run, `Esc` clear, `F` fullscreen.
 - **Engine.** Build against `demo/engine.mock.js` first: the same API, with fake but plausible data and parts. When the coordinator says the engine is ready, switch to `demo/engine.js`.
 - **States:**
   - model loading (show progress)
@@ -144,13 +145,13 @@ Run `./serve.sh`, then open http://localhost:8000/demo/. The model files need ht
 
 ## Calibration
 
-Engine-generated on 9 Oct 2026 from the shipped `demo/data/map.json`, and updated after the clause-splitting fix for messy, typed-live prompts. `node demo/test-engine.mjs` re-checks all of this and exits non-zero on any failure (Node 18.20 and 25; Chrome gives identical numbers).
+Engine-generated on 9 Oct 2026 from the shipped `demo/data/map.json`, and updated after the clause-splitting fix for messy, typed-live prompts, the centroid override for clause parts, and preset 5. `node demo/test-engine.mjs` re-checks all of this and exits non-zero on any failure (Node 18.20 and 25; Chrome gives identical numbers).
 
 **Thresholds** (`map.json` → `thresholds`)
 
 | Name | Value | Meaning and how it was set |
 |---|---|---|
-| `touch` | **0.21** | A clause touches its part when `sim >= 0.21`. It was set to the midpoint of the feasible window (0.180, 0.237]: the 3 AM clause (0.237) must light up; chit-chat ("can you help me", 0.180) should not. Since the splitting fix, the 3 AM preset is two clauses, and its upper bound is the first clause at 0.220. 0.21 is unchanged and still inside the window, with a margin of 0.01; scores are deterministic. |
+| `touch` | **0.21** | A clause touches its part when `sim >= 0.21`. It was set to the midpoint of the feasible window (0.180, 0.237]: the 3 AM clause (0.237) must light up; chit-chat ("can you help me", 0.180) should not. Since the splitting fix, the 3 AM preset is two clauses, and its upper bound is the first clause at 0.220. With all five presets, the window is (0.180, 0.220]. 0.21 is unchanged and still inside it, with a margin of 0.01; scores are deterministic. `scripts/calibrate.mjs` keeps a threshold that is still feasible; `--reset` recomputes the midpoint. |
 | `strong` | **0.43** | A strong pull: the focused preset's Focus (0.497) clears it, the scattered preset's (0.362) doesn't. The value is their midpoint. Use it, for example, as a reference line on the "Where the whole prompt points" chart. |
 
 **Preset results** (Focus = `whole.top.sim`)
@@ -161,26 +162,26 @@ Engine-generated on 9 Oct 2026 from the shipped `demo/data/map.json`, and update
 | 2 | Scattered | 7 | 6: react, postgres, auth, payments, docker, css | 0.362 (react) | ≥ 5 parts, visibly lower Focus than preset 1 | PASS (0.135 lower) |
 | 3 | Negation | 2 | 1: react | 0.544 (react) | React still lights up | PASS ("Don't use React" → react, 0.767) |
 | 4 | 3 AM | 2 | 1: interpersonal | 0.237 (interpersonal) | Relationships part | PASS (both clauses land on interpersonal) |
+| 5 | Mixed | 3 | 3: ml, react, interpersonal | 0.358 (react) | ml, react and interpersonal | PASS |
 
-Clause detail: preset 1 is "Add rate limiting … per minute" → auth 0.480, "return HTTP 429" → auth 0.225. Preset 2 is React frontend → react 0.652, Postgres database → postgres 0.703, Google login → auth 0.427, Stripe payments → payments 0.821, landing page copy → writing 0.203 (below `touch`), Docker → docker 0.714, look beautiful → css 0.284. Preset 3 is admin dashboard → ux 0.140 (below `touch`), "Don't use React" → react 0.767. Preset 4 is "why is he not replying to my texts" → interpersonal 0.220, "should I text him again?" → interpersonal 0.195 (below `touch`).
+Clause detail: preset 1 is "Add rate limiting … per minute" → auth 0.480, "return HTTP 429" → auth 0.225. Preset 2 is React frontend → react 0.652, Postgres database → postgres 0.703, Google login → auth 0.427, Stripe payments → payments 0.821, landing page copy → writing 0.203 (below `touch`), Docker → docker 0.714, look beautiful → css 0.284. Preset 3 is admin dashboard → ux 0.140 (below `touch`), "Don't use React" → react 0.767. Preset 4 is "why is he not replying to my texts" → interpersonal 0.220, "should I text him again?" → interpersonal 0.195 (below `touch`). Preset 5 is "create me an ai model" → ml 0.305, "a react website for it" → react 0.614, "why isn't she texting me?" → interpersonal 0.262.
 
-**Typed live** (test-only case 5, not a UI preset): `create me ai model and website for it and also why isn't she texting me?`
+**Typed live** (test-only case L1, not a UI preset): the speaker's original live prompt, `create me ai model and website for it and also why isn't she texting me?`. Preset 5 is the same prompt with "an" and "react" added.
 
-| Clause | Part (kNN vote) | Sim | Touched | Nearest centroids |
+| Clause | Part | Sim | Touched | Nearest centroids |
 |---|---|---|---|---|
-| create me ai model | writing | 0.252 | yes | ml 0.299, writing 0.252 |
+| create me ai model | ml (the vote picked writing; the centroid override switches to ml) | 0.299 | yes | ml 0.299, writing 0.252 |
 | website for it | writing | 0.097 | no | ml 0.113, writing 0.097, css 0.091, ux 0.082 |
 | why isn't she texting me? | interpersonal | 0.262 | yes | interpersonal 0.262 |
 
-The prompt now splits into 3 clauses (before the fix it was one, and only Relationships lit up). Parts touched: writing and interpersonal; Focus 0.257 (ml). The test asserts the split and interpersonal. It reports two known gaps without failing, so the threshold isn't lowered to fit:
-- **ml is not touched.** The clause's nearest centroid is ml, but the spec's kNN vote picks writing: six weak Writing.SE neighbours ("How does one write a character smarter than oneself?") outweigh the strongest one, an ml title at 0.382. "create me **an** ai model" goes to ml.
-- **No web part is touched.** "website for it" carries no topic; its best web part is css at 0.091.
+Parts touched: ml and interpersonal; Focus 0.257 (ml). The test asserts this, including that "website for it" stays dark. That clause is too vague to land anywhere: its best part is ml at 0.113, and its best web part is css at 0.091. That's the speaker's on-stage point, and adding "react" to it (preset 5) gives react 0.614.
 
 **Negation evidence:** cos("Use React for the UI", "Don't use React for the UI") = **0.853**. To the model the two instructions are nearly the same point.
 
 **Preset wording adjusted while calibrating** (intent kept; `demo/presets.json` holds the final text):
 - Preset 1: "Add rate limiting to **user authentication on** the /login endpoint: max 5 **failed** attempts per IP per minute, then return HTTP 429." With the original wording, Focus was 0.404 against the scattered preset's 0.362, which isn't visibly lower.
 - Preset 4: "why is he not replying to my **texts**, should I text him again?" The original "messages" scored 0.205, too close to chit-chat.
+- Preset 5 (added after calibration): the speaker's live prompt with "an" and "react" added, so that each clause lands; the original wording is test case L1.
 - Presets 2 and 3 are unchanged. Focus values are lower than the spec's illustrative 0.62 / 0.31: with all-MiniLM-L6-v2, a long prompt's cosine to a whole part's centroid tops out around 0.5.
 
 **Parts** (16 parts, 125 top-voted titles each, 2,000 points): react (SO [reactjs]), css (SO [css]), auth (SO [authentication]), postgres (SO [postgresql]), docker (SO [docker]), payments (SO [stripe-payments], payment titles only), ml (SO [machine-learning]), android (SO [android]), testing (SO [unit-testing]), ux, security, writing, law, money, interpersonal (label "Relationships"), cooking (Stack Exchange sites). `workplace` was dropped, because it competed with Relationships on 3 AM-style prompts. `writing` was added so that "write the landing page copy" has a home; without it, the clause landed on law ("copy" ≈ copyright). In the 3-D layout, 90% of the points are nearer their own part's centroid than any other.
