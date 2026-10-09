@@ -1,0 +1,19 @@
+{
+  "id": "imdigitalashish/dumb-zone-measured",
+  "title": "Dumb Zone Measured",
+  "code_file": "dumb-zone-measured.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_internet": "true",
+  "machine_shape": "NvidiaTeslaT4",
+  "dataset_sources": [
+    "imdigitalashish/gutenberg-novels-haystack"
+  ],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": [
+    "qwen-lm/qwen2.5/transformers/7b-instruct/1"
+  ]
+}

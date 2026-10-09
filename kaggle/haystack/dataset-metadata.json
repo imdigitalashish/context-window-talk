@@ -1,0 +1,10 @@
+{
+  "title": "Gutenberg Novels Haystack",
+  "id": "imdigitalashish/gutenberg-novels-haystack",
+  "licenses": [
+    {
+      "name": "other"
+    }
+  ],
+  "description": "Ten public-domain novels from Project Gutenberg, used as filler text for long-context tests."
+}
