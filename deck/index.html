@@ -88,6 +88,12 @@
 .reveal .t.zone { font-size: 52px; }
 .reveal .t.ann { font-size: 58px; }
 .reveal .t.ann-s { font-size: 48px; }
+.reveal .t.cl-name { font-size: 42px; color: #a8a398; }
+.reveal .t.cl-prompt { font-size: 46px; }
+.reveal .t.cl-prompt.small { font-size: 40px; }
+.reveal .t.cl-out { font-size: 54px; }
+.reveal .t.cl-cap { font-size: 64px; }
+.reveal .t.u-cap { font-size: 46px; font-weight: 600; }
 .reveal .dim { position: absolute; background: rgba(10, 10, 10, 0.8); }
 .reveal .abs .step { display: none; }
 </style>
@@ -324,14 +330,51 @@
       <span class="fragment step" data-fragment-index="3"></span>
     </section>
 
-    <section>
-      <h2 class="law-title">2. The Clustering Law</h2>
-      <p class="law-body">AI models process information by triggering specific parts of their “brain” or internal clusters. Giving too many instructions or rules at once triggers too many clusters, leading to scattered, non-deterministic outputs. It is better to prompt in a sequential, focused manner.</p>
+    <section class="abs" data-cl>
+      <svg class="abs-svg" viewBox="0 0 1920 1080" aria-hidden="true">
+        <g class="cl-hl1"></g>
+        <g class="cl-hl2"></g>
+        <g class="cl-map"></g>
+        <g class="cl-a1"></g>
+        <g class="cl-a2"></g>
+      </svg>
+      <p class="t l title-l" style="left:170px;top:110px">2. The Clustering Law</p>
+      <p class="t cl-name" style="left:700px;top:505px">frontend</p>
+      <p class="t cl-name" style="left:960px;top:465px">backend</p>
+      <p class="t cl-name" style="left:1220px;top:505px">auth</p>
+      <p class="t cl-name" style="left:700px;top:765px">payments</p>
+      <p class="t cl-name" style="left:960px;top:805px">design</p>
+      <p class="t cl-name" style="left:1220px;top:765px">deploy</p>
+      <p class="t cl-prompt cl-p1" style="left:335px;top:500px">Add rate limiting<br>to /login</p>
+      <p class="t cl-prompt small cl-p2" style="left:335px;top:500px">Build frontend,<br>backend, login,<br>payments, design<br>&amp; deploy it</p>
+      <p class="t cl-out cl-o1" style="left:1600px;top:400px;color:#6fcf97">focused answer ✓</p>
+      <p class="t cl-out cl-o2" style="left:1600px;top:530px;color:#ff6f61">scattered,<br>non-deterministic ✗</p>
+      <p class="t cl-cap" style="left:960px;top:955px">Better: prompt in a sequential, focused manner.</p>
+      <span class="fragment step" data-fragment-index="0"></span>
+      <span class="fragment step" data-fragment-index="1"></span>
+      <span class="fragment step" data-fragment-index="2"></span>
     </section>
 
-    <section>
-      <h2 class="law-title">3. U-Shaped Attention</h2>
-      <p class="law-body">Models tend to prioritize the first and last tokens in the context window, while often losing focus on information in the middle. To optimize results, place system prompts at the end and keep your critical instructions at the very beginning of the query.</p>
+    <section class="abs" data-u>
+      <svg class="abs-svg" viewBox="0 0 1920 1080" aria-hidden="true">
+        <g class="u-axis"></g>
+        <g class="u-glow"></g>
+        <g class="u-cells"></g>
+        <path class="u-curve" d="M265,280 C400,520 640,560 960,560 C1280,560 1520,520 1655,280" fill="none" stroke="#f3efe7" stroke-width="7" stroke-linecap="round"/>
+      </svg>
+      <div class="dim u-dim" style="left:468px;top:645px;width:982px;height:90px"></div>
+      <p class="t l title-l" style="left:170px;top:110px">3. U-Shaped Attention</p>
+      <p class="t axis yaxis u-ylab" style="left:180px;top:430px">attention</p>
+      <p class="t axis" style="left:330px;top:785px">first</p>
+      <p class="t axis" style="left:960px;top:785px">middle</p>
+      <p class="t axis" style="left:1590px;top:785px">last</p>
+      <p class="t ann u-rem" style="left:330px;top:235px;color:#6fcf97">remembered</p>
+      <p class="t ann u-rem" style="left:1590px;top:235px;color:#6fcf97">remembered</p>
+      <p class="t ann u-lost" style="left:960px;top:470px;color:#ff6f61">lost in the middle</p>
+      <p class="t u-cap" style="left:960px;top:930px">To optimize results, place system prompts at the end<br>and keep your critical instructions at the very beginning of the query.</p>
+      <span class="fragment step" data-fragment-index="0"></span>
+      <span class="fragment step" data-fragment-index="1"></span>
+      <span class="fragment step" data-fragment-index="2"></span>
     </section>
 
     <section class="abs" data-body>
@@ -817,6 +860,103 @@ Reveal.initialize({
   };
   Reveal.on('fragmentshown', step);
   Reveal.on('fragmenthidden', step);
+})();
+
+// Shared: drive a GSAP timeline from reveal fragments (labels s0…sN). Forward plays, backward jumps.
+const driveSteps = (slide, tl, count) => {
+  const labels = Array.from({ length: count + 1 }, (_, i) => `s${i}`);
+  const state = () => (Reveal.getIndices().f ?? -1) + 1;
+  const here = () => Reveal.getCurrentSlide() === slide;
+  let at = 0;
+  const jump = () => { at = state(); tl.seek(labels[at]).pause(); };
+  Reveal.on('slidechanged', () => { if (here()) jump(); });
+  Reveal.on('ready', () => { if (here()) jump(); });
+  const step = () => {
+    if (!here()) return;
+    const st = state();
+    if (st > at) tl.tweenTo(labels[st]); else tl.seek(labels[st]).pause();
+    at = st;
+  };
+  Reveal.on('fragmentshown', step);
+  Reveal.on('fragmenthidden', step);
+};
+
+// Law 2, clustering: one focused prompt lights one cluster; a scattered prompt lights all of them.
+(() => {
+  const slide = document.querySelector('[data-cl]');
+  const svg = slide.querySelector('.abs-svg');
+  const rc = rough.svg(svg);
+  const q = c => slide.querySelector(c);
+  const INK = '#f3efe7', GREEN = '#6fcf97', RED = '#ff6f61';
+  const O = (seed, x = {}) => ({ stroke: INK, strokeWidth: 4, roughness: 1.1, bowing: 1.3, seed, ...x });
+  const C = [[700, 400], [960, 360], [1220, 400], [700, 660], [960, 700], [1220, 660]];
+  const map = q('.cl-map');
+  C.forEach(([x, y], i) => map.appendChild(rc.circle(x, y, 170,
+    O(901 + i, { strokeWidth: 3, fill: '#a8a398', fillStyle: 'dots', hachureGap: 18, fillWeight: 3 }))));
+  map.appendChild(rc.rectangle(150, 380, 370, 240, O(911)));
+  const glow = (grp, idx, color, seed) => idx.forEach((i, k) => grp.appendChild(rc.circle(C[i][0], C[i][1], 196,
+    { stroke: 'none', fill: color, fillStyle: 'solid', roughness: 1, seed: seed + k })));
+  glow(q('.cl-hl1'), [2], 'rgba(111,207,151,0.4)', 921);
+  glow(q('.cl-hl2'), [0, 1, 2, 3, 4, 5], 'rgba(255,111,97,0.4)', 931);
+  const arrow = (grp, x1, y1, cx, cy, x2, y2, seed, color) => {
+    grp.appendChild(rc.curve([[x1, y1], [cx, cy], [x2, y2]], O(seed, { stroke: color, strokeWidth: 3.5 })));
+    const a = Math.atan2(y2 - cy, x2 - cx);
+    for (const s of [-1, 1]) {
+      const t = a + Math.PI + s * 0.45;
+      grp.appendChild(rc.line(x2, y2, x2 + 26 * Math.cos(t), y2 + 26 * Math.sin(t), O(seed + 5 + s, { stroke: color, strokeWidth: 3.5 })));
+    }
+  };
+  arrow(q('.cl-a1'), 525, 470, 900, 220, 1132, 390, 941, GREEN);
+  const a2 = q('.cl-a2');
+  [[612, 400, 570, 440], [873, 360, 720, 330], [1132, 400, 900, 250],
+   [612, 660, 570, 600], [873, 700, 720, 730], [1132, 660, 900, 820]].forEach(([x, y, cx, cy], i) =>
+    arrow(a2, 525, 500, cx, cy, x, y, 951 + i * 10, RED));
+
+  const s1 = [q('.cl-hl1'), q('.cl-a1'), q('.cl-p1'), q('.cl-o1')];
+  const s2 = [q('.cl-hl2'), q('.cl-a2'), q('.cl-p2'), q('.cl-o2')];
+  gsap.set([...s1, ...s2, q('.cl-cap')], { autoAlpha: 0 });
+  const tl = gsap.timeline({ paused: true })
+    .addLabel('s0')
+    .to(q('.cl-p1'), { autoAlpha: 1, duration: 0.3 })
+    .to([q('.cl-a1'), q('.cl-hl1')], { autoAlpha: 1, duration: 0.45 })
+    .to(q('.cl-o1'), { autoAlpha: 1, duration: 0.35 })
+    .addLabel('s1')
+    .to(s1, { autoAlpha: 0, duration: 0.25 })
+    .to(q('.cl-p2'), { autoAlpha: 1, duration: 0.3 })
+    .to([q('.cl-a2'), q('.cl-hl2')], { autoAlpha: 1, duration: 0.45 })
+    .to(q('.cl-o2'), { autoAlpha: 1, duration: 0.35 })
+    .addLabel('s2')
+    .to(q('.cl-cap'), { autoAlpha: 1, duration: 0.35 })
+    .addLabel('s3');
+  driveSteps(slide, tl, 3);
+})();
+
+// Law 3, U-shaped attention: the curve draws, the ends glow, the middle fades.
+(() => {
+  const slide = document.querySelector('[data-u]');
+  const svg = slide.querySelector('.abs-svg');
+  const rc = rough.svg(svg);
+  const q = c => slide.querySelector(c), qa = c => [...slide.querySelectorAll(c)];
+  const O = (seed, x = {}) => ({ stroke: '#f3efe7', strokeWidth: 4, roughness: 1, bowing: 1.2, seed, ...x });
+  q('.u-axis').appendChild(rc.line(230, 620, 230, 250, O(1001)));
+  for (let i = 0; i < 20; i++) q('.u-cells').appendChild(rc.rectangle(263 + i * 70, 650, 64, 80, O(1010 + i, { strokeWidth: 2.5 })));
+  [0, 1, 2, 17, 18, 19].forEach((i, k) => q('.u-glow').appendChild(rc.rectangle(263 + i * 70, 650, 64, 80,
+    { stroke: 'none', fill: 'rgba(255,212,92,0.45)', fillStyle: 'solid', roughness: 1, seed: 1040 + k })));
+
+  const curve = q('.u-curve'), glow = q('.u-glow'), dim = q('.u-dim');
+  gsap.set([glow, dim, q('.u-ylab'), q('.u-lost'), q('.u-cap'), ...qa('.u-rem')], { autoAlpha: 0 });
+  gsap.set(curve, { drawSVG: '0%' });
+  const tl = gsap.timeline({ paused: true })
+    .addLabel('s0')
+    .to(curve, { drawSVG: '100%', duration: 1.4, ease: 'power1.inOut' })
+    .to(q('.u-ylab'), { autoAlpha: 1, duration: 0.3 }, '<0.4')
+    .addLabel('s1')
+    .to([glow, dim], { autoAlpha: 1, duration: 0.45 })
+    .to([q('.u-lost'), ...qa('.u-rem')], { autoAlpha: 1, duration: 0.35 })
+    .addLabel('s2')
+    .to(q('.u-cap'), { autoAlpha: 1, duration: 0.35 })
+    .addLabel('s3');
+  driveSteps(slide, tl, 3);
 })();
 </script>
 </body>
