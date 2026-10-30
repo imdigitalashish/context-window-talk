@@ -3,239 +3,729 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI is like a girlfriend that ghosts you in your context window</title>
-<!--
-THESIS: The cry is the slide. "DORAEMONNNN!", the most-heard word of an Indian 2000s childhood, flips into
-"CHATGPTTTT!" and the room recognises itself. Refuses the stock "AI is everywhere" bullet opener.
-OWN-WORLD: Drenched Doraemon blue with manga halftone, collar-red offset shadows, bell-yellow highlights.
-Baloo 2 (Ek Type) shouts; Kalam (ITF) is Nobita's ballpoint on Classmate-ruled chits with the teacher's red pen.
-Today's gadget is a real dark-mode chat app on a phone at 3:04 with 4% battery.
-STORY: Remember Nobita -> we laughed at him -> here are our chats -> we're all Nobita now -> and ours ghosts us.
-FIRST VIEWPORT: The cry spans the top at ~196px with a Hindi-dub echo; three tilted notebook chits below-left.
-FORM: Comic panel + school-notebook ephemera; signature moment: split-flap morph of the cry on step 2.
-Narrow, fully specified request: shaped directly, no seed.
--->
-<link rel="stylesheet" href="assets/fonts.css">
+<title>AI is like a girlfriend that ghosts in your context window</title>
+<link rel="stylesheet" href="vendor/reveal/reset.css">
+<link rel="stylesheet" href="vendor/reveal/reveal.css">
+<link rel="stylesheet" href="vendor/reveal/theme/black.css">
+<link rel="stylesheet" href="assets/caveat.css">
 <style>
-:root{
-  --blue:#0B7DC8; --blue-deep:#06578F; --red:#E5242B; --yellow:#FFD54A;
-  --ink:#0B2545; --ink-soft:#43597A; --pen:#1B3D8F; --paper:#FFFEF7;
-  --ease:cubic-bezier(.16,1,.3,1);
+:root {
+  --r-background-color: #0a0a0a;
+  --r-main-font: "Caveat", cursive;
+  --r-main-color: #f3efe7;
+  --r-main-font-size: 56px;
+  --r-heading-font: "Caveat", cursive;
+  --r-heading-color: #f3efe7;
+  --r-heading-text-transform: none;
+  --r-heading-font-weight: 700;
+  --r-heading-line-height: 1.02;
+  --r-link-color: #f3efe7;
+  --r-link-color-hover: #ffffff;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:var(--blue);overflow:hidden}
-body{font-family:"Baloo 2",system-ui,sans-serif;color:#fff;-webkit-font-smoothing:antialiased;cursor:default;user-select:none}
-#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0}
-.slide{position:absolute;inset:0;visibility:hidden;overflow:hidden}
-.slide.active{visibility:visible}
+.reveal .slides section { text-align: left; padding: 0 170px; box-sizing: border-box; }
+.reveal h1 { font-size: 168px; }
+.reveal .byline { margin-top: 56px; font-size: 72px; font-weight: 600; color: #a8a398; }
 
-/* step system: [data-step=n] appears at step n, [data-hide=n] leaves at step n */
-[data-step]{opacity:0;translate:0 40px;filter:blur(8px);
-  transition:opacity .5s var(--ease),translate .8s var(--ease),filter .5s var(--ease)}
-[data-step].on{opacity:1;translate:0 0;filter:blur(0)}
-[data-hide]{transition:opacity .4s var(--ease),translate .6s var(--ease),filter .4s var(--ease)}
-[data-hide].off{opacity:0;translate:0 70px;filter:blur(8px)}
+.reveal .slides section.intro-slide { padding: 0; }
+.reveal .intro { display: grid; grid-template-columns: 694px 1fr; column-gap: 80px; align-items: center; height: 1000px; padding: 0 90px 0 70px; }
+.reveal .intro .photo { margin: 0; max-width: none; max-height: none; width: 694px; height: 1000px; object-fit: cover; border-radius: 8px; }
+.reveal .intro .points { display: block; margin: 0; padding: 0; list-style: none; }
+.reveal .intro .points li { position: relative; padding-left: 36px; margin: 0 0 14px; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; font-size: 31px; font-weight: 400; line-height: 1.28; text-wrap: pretty; }
+.reveal .intro .points li::before { content: "–"; position: absolute; left: 0; color: #a8a398; }
 
-/* ───────── Slide 1 · We're all Nobita now ───────── */
-.s-nobita{background:var(--blue)}
-.s-nobita::before{content:"";position:absolute;inset:0;pointer-events:none;
-  background-image:radial-gradient(circle,rgba(255,255,255,.16) 0 2.6px,transparent 3.2px);
-  background-size:24px 24px;
-  -webkit-mask-image:radial-gradient(110% 95% at 100% 0%,#000 0%,transparent 58%);
-          mask-image:radial-gradient(110% 95% at 100% 0%,#000 0%,transparent 58%)}
+.reveal .slides section.brain-slide { padding: 0; height: 1080px; }
+.reveal .brain-svg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+.reveal .caps { position: absolute; left: 0; top: 760px; width: 1920px; text-align: center; }
+.reveal .cap { position: absolute; left: 0; right: 0; top: 0; margin: 0; font-size: 92px; font-weight: 700; line-height: 1.05; }
+.reveal .brain-slide .step { display: none; }
+.reveal h2.statement { font-size: 150px; margin: 0 0 48px; }
+.reveal .question { font-size: 84px; font-weight: 600; line-height: 1.1; margin: 0; }
 
-.cry{position:absolute;left:88px;top:92px;font-size:196px;font-weight:800;line-height:1;
-  letter-spacing:-.012em;white-space:nowrap;transform:rotate(-3deg);transform-origin:0 50%;
-  text-shadow:10px 10px 0 var(--red)}
-.cry .ch{display:inline-block}
-.cry.thud{animation:thud .55s var(--ease)}
-@keyframes thud{0%{scale:1.06}100%{scale:1}}
-.cry-hi{position:absolute;right:150px;top:300px;font-size:84px;font-weight:700;line-height:1.1;
-  color:var(--yellow);transform:rotate(-3deg);text-shadow:5px 5px 0 var(--blue-deep)}
+.reveal .slides section.flow-slide { padding: 0; height: 1080px; }
+.reveal .flow-svg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+.reveal .flow-text { position: absolute; margin: 0; text-align: center; font-weight: 700; line-height: 1.05; }
+.reveal .flow-text.q { left: 560px; width: 800px; top: 222px; font-size: 62px; }
+.reveal .flow-text.yes { left: 300px; top: 400px; font-size: 72px; }
+.reveal .flow-text.no { left: 1560px; top: 400px; font-size: 72px; }
+.reveal .flow-text.out-yes { left: 170px; width: 620px; top: 690px; font-size: 64px; }
+.reveal .flow-text.out-no { left: 1130px; width: 620px; top: 690px; font-size: 64px; }
 
-.chits{list-style:none}
-.chit{position:absolute;width:680px;padding:24px 36px 22px 112px;
-  font-family:"Kalam",cursive;font-weight:700;font-size:52px;line-height:1.2;color:var(--pen);
-  background:
-    linear-gradient(90deg,transparent 80px,rgba(229,36,43,.6) 80px 83px,transparent 83px),
-    repeating-linear-gradient(180deg,transparent 0 60px,rgba(11,125,200,.24) 60px 62px),
-    var(--paper);
-  border-radius:4px;box-shadow:0 22px 30px -10px rgba(2,28,58,.5)}
-.c1{left:104px;top:470px;rotate:-4deg}
-.c2{left:236px;top:645px;rotate:2.5deg}
-.c3{left:120px;top:828px;rotate:-1.5deg}
-.redpen{display:inline-block;color:var(--red);border:5px solid var(--red);border-radius:50%;
-  padding:0 .26em;line-height:1.05;transform:rotate(-8deg)}
-
-.bubble{position:absolute;left:968px;top:520px;width:852px;padding:40px 58px 50px;background:#fff;
-  color:var(--ink);border-radius:60px;box-shadow:0 26px 40px -14px rgba(2,28,58,.55)}
-.bubble::after{content:"";position:absolute;left:120px;bottom:-58px;width:96px;height:64px;background:#fff;
-  clip-path:polygon(0 0,100% 0,6% 100%)}
-.bubble small{display:block;font-size:44px;font-weight:600;color:var(--ink-soft);line-height:1.2}
-.bubble strong{display:block;font-size:68px;font-weight:800;line-height:1.05;margin-top:8px;text-wrap:balance}
-
-.phone{position:absolute;left:1188px;top:392px;width:620px;height:900px;padding:18px;border-radius:92px;
-  background:#0B0B0C;rotate:3deg;
-  box-shadow:0 46px 60px -24px rgba(2,22,48,.7),inset 0 0 0 3px #2B2B2E}
-.phone[data-step]{translate:0 560px;filter:none;transition:opacity .35s var(--ease),translate 1s var(--ease)}
-.phone[data-step].on{translate:0 0}
-.screen{position:relative;height:100%;border-radius:76px;background:#151515;overflow:hidden;color:#ECECEC;
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif}
-.island{position:absolute;left:50%;top:22px;width:186px;height:54px;border-radius:28px;background:#000;translate:-50% 0}
-.status{display:flex;justify-content:space-between;align-items:center;height:98px;padding:16px 56px 0;
-  font-size:31px;font-weight:600;letter-spacing:-.01em}
-.batt{display:inline-flex;align-items:center;gap:10px;color:#FF453A}
-.batt i{position:relative;width:54px;height:27px;border:3px solid #8E8E93;border-radius:9px}
-.batt i::before{content:"";position:absolute;left:3px;top:3px;bottom:3px;width:6px;border-radius:2px;background:#FF453A}
-.batt i::after{content:"";position:absolute;right:-8px;top:7px;width:4px;height:8px;border-radius:0 3px 3px 0;background:#8E8E93}
-.app-head{display:flex;align-items:center;justify-content:space-between;padding:22px 44px 20px}
-.app-head h2{font-size:44px;font-weight:700;letter-spacing:-.02em}
-.app-head svg{width:44px;height:44px;stroke:#ECECEC;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.search{display:flex;align-items:center;gap:14px;margin:0 32px 10px;padding:18px 24px;border-radius:24px;background:#262626;
-  color:#9B9B9B;font-size:29px}
-.search svg{width:30px;height:30px;stroke:#9B9B9B;fill:none;stroke-width:2.4;stroke-linecap:round}
-.group{padding:26px 44px 8px;font-size:25px;font-weight:600;color:#A3A3A3}
-.chat{padding:15px 44px;font-size:32px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.chat.sel{margin:2px 22px;padding:15px 22px;border-radius:20px;background:#2C2C2C;color:#fff}
-
-.punch{position:absolute;left:88px;top:470px;font-size:164px;font-weight:800;line-height:.92;
-  letter-spacing:-.02em;text-shadow:9px 9px 0 var(--blue-deep)}
-.punch em{font-style:normal;color:var(--yellow)}
-.ghost{position:absolute;left:96px;top:830px;max-width:1040px;font-size:60px;font-weight:600;line-height:1.15}
-.ghost b{font-weight:800;color:var(--yellow)}
-
-/* presenter hint */
-.hint{position:fixed;right:20px;bottom:16px;font:500 13px/1 system-ui,sans-serif;color:rgba(255,255,255,.85);
-  background:rgba(0,0,0,.28);padding:9px 12px;border-radius:8px;transition:opacity .6s;pointer-events:none}
-.hint.hide{opacity:0}
-
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+/* Absolutely laid-out slides: .t is centered on its left/top point; .l and .r anchor left/right */
+.reveal .slides section.abs { padding: 0; height: 1080px; }
+.reveal .abs-svg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+.reveal .t { position: absolute; margin: 0; font-weight: 700; line-height: 1.05; white-space: nowrap; text-align: center; transform: translate(-50%, -50%); }
+.reveal .t.l { transform: translate(0, -50%); text-align: left; }
+.reveal .t.r { transform: translate(-100%, -50%); text-align: right; }
+.reveal .t.g { transform: none; }
+.reveal .t.cap { left: 960px; font-size: 76px; }
+.reveal .t.title-l { font-size: 110px; }
+.reveal .t.word { font-size: 120px; }
+.reveal .t.num { font-size: 120px; color: #ffd45c; }
+.reveal .t.box-label { font-size: 96px; }
+.reveal .t.head { font-size: 72px; color: #a8a398; }
+.reveal .t.row { font-size: 56px; font-weight: 600; }
+.reveal .t.term { font-size: 68px; }
+.reveal .t.lab { font-size: 60px; }
+.reveal .t.sub { font-size: 44px; font-weight: 600; color: #a8a398; }
+.reveal .t.ex { font-size: 48px; color: #ffd45c; }
+.reveal .t.qmark { font-size: 110px; }
+.reveal .t.word-lab { font-size: 72px; color: #ffd45c; }
+.reveal .t.cap2 { font-size: 54px; }
+.reveal .t.grid { font-size: 52px; line-height: 1.25; color: #ffd45c; white-space: pre; }
+.reveal .t.note { font-size: 46px; font-weight: 600; color: #a8a398; }
+.reveal .slides section.video-slide { padding: 0; height: 1080px; }
+.reveal .tweet-video { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 1800px; height: auto; max-width: none; max-height: none; }
+.reveal .t.tok { font-size: 60px; }
+.reveal .t.slot { font-size: 64px; }
+.reveal .t.ctx-lab { font-size: 64px; }
+.reveal .t.game { font-size: 84px; }
+.reveal .hl { color: #ffd45c; }
+.reveal h2.law-title { font-size: 110px; margin: 0 0 56px; }
+.reveal .law-body { font-size: 62px; font-weight: 600; line-height: 1.22; max-width: 1580px; margin: 0; }
+.reveal .t.part { font-size: 72px; }
+.reveal .dim { position: absolute; background: rgba(10, 10, 10, 0.8); }
+.reveal .abs .step { display: none; }
 </style>
 </head>
 <body>
-<div id="stage">
+<div class="reveal">
+  <div class="slides">
 
-  <!-- 1 · We're all Nobita now -->
-  <section class="slide s-nobita" data-steps="4" aria-label="We're all Nobita now">
-    <h1 class="cry" id="cry">DORAEMONNNN!</h1>
-    <p class="cry-hi" lang="hi" data-hide="2">डोरेमोनननन!</p>
+    <section>
+      <h1>AI is like a girlfriend<br>that ghosts in your<br>context window.</h1>
+      <p class="byline">@imdigitalashish - Ashish Kumar Verma</p>
+    </section>
 
-    <ul class="chits" data-hide="2">
-      <li class="chit c1">Maths test: <span class="redpen">0</span> marks</li>
-      <li class="chit c2">Gian took my comics. Again.</li>
-      <li class="chit c3">Shizuka didn't even look at me.</li>
-    </ul>
-
-    <div class="bubble" data-step="1" data-hide="2">
-      <small>We used to laugh at him.</small>
-      <strong>Who takes life advice from a robot cat? 😂</strong>
-    </div>
-
-    <div class="phone" data-step="2" aria-label="An AI chat app's chat list at 3:04 AM">
-      <div class="screen">
-        <div class="island"></div>
-        <div class="status"><span>3:04</span><span class="batt">4% <i></i></span></div>
-        <div class="app-head">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
-          <h2>Chats</h2>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6"/><path d="M17.5 3.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
-        </div>
-        <div class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Search</div>
-        <div class="group">Today</div>
-        <div class="chat sel">Why Isn't He Replying</div>
-        <div class="chat">Meaning of a "k" Reply</div>
-        <div class="chat">Reply Without Sounding Desperate</div>
-        <div class="chat">Is Double Texting Bad?</div>
-        <div class="group">Yesterday</div>
-        <div class="chat">Fix My Code, Urgent</div>
-        <div class="chat">Gift Ideas Under ₹500</div>
-        <div class="chat">Passionate SOP for Masters</div>
+    <section class="intro-slide">
+      <div class="intro">
+        <img class="photo" src="assets/ashish.jpg" alt="Ashish Kumar Verma in front of Microsoft's office">
+        <ul class="points">
+          <li>Cracked IIT Delhi, enrolled in Engineering Physics</li>
+          <li>dropped out of IIT Delhi</li>
+          <li>Japan Sakura Science Alumni</li>
+          <li>Published in Springer Nature Worlds most reputed journal — youngest researcher officially</li>
+          <li>Guinness World Record — World's Largest AI Hackathon (Mentor &amp; Judge)</li>
+          <li>Youngest Google Developer Expert Globally</li>
+          <li>India Skills 2021, 2023, 2024, Silver and Medallion of Excellence.</li>
+          <li>Panelist with the Prime Minister of India on the PM's YouTube channel</li>
+          <li>Featured in Japan's Bukyo Newspaper as an India–Japan AI Innovation bridge</li>
+          <li>Speaker at Google, Microsoft, IIT Delhi &amp; IIT Madras, and 40+ talks at various platforms — mentored 30K+ students</li>
+          <li>Corrected a fuel calculation in Project Hail Mary. acknowledged by author Andy Weir ( International Author )</li>
+        </ul>
       </div>
-    </div>
+    </section>
 
-    <p class="punch" data-step="3">We're all<br><em>Nobita</em> now.</p>
-    <p class="ghost" data-step="4">Only difference:<br>our Doraemon <b>ghosts us.</b> 👻</p>
-  </section>
+    <section class="brain-slide" data-brain>
+      <svg class="brain-svg" viewBox="0 0 1920 1080" aria-hidden="true">
+        <g fill="none" stroke="#f3efe7" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+          <path class="b-outline"/>
+          <g class="b-detail"></g>
+        </g>
+      </svg>
+      <div class="caps">
+        <p class="cap">We have to understand this.</p>
+        <p class="cap">Now this brain is a box.<br>We have to understand this first.</p>
+        <p class="cap">This has compressed knowledge<br>of all of the neurons.</p>
+        <p class="cap">This is what we call LLMs.</p>
+      </div>
+      <span class="fragment step" data-fragment-index="0"></span>
+      <span class="fragment step" data-fragment-index="1"></span>
+      <span class="fragment step" data-fragment-index="2"></span>
+    </section>
 
+    <section>
+      <h2 class="statement">Let's first clear the basics.</h2>
+      <p class="question">Does everyone know about tokens and context length?</p>
+    </section>
+
+    <section class="flow-slide" data-flow>
+      <svg class="flow-svg" viewBox="0 0 1920 1080" aria-hidden="true">
+        <g data-g="q"></g>
+        <g class="fragment" data-fragment-index="0" data-g="yes"></g>
+        <g class="fragment" data-fragment-index="1" data-g="no"></g>
+      </svg>
+      <p class="flow-text q">Do you know tokens<br>&amp; context length?</p>
+      <p class="flow-text yes fragment" data-fragment-index="0">Yes</p>
+      <p class="flow-text no fragment" data-fragment-index="1">No</p>
+      <p class="flow-text out-yes fragment" data-fragment-index="0">Then I won't bore<br>you with it.</p>
+      <p class="flow-text out-no fragment" data-fragment-index="1">Then I'm boring<br>you anyway.</p>
+    </section>
+
+    <section class="abs" data-chat>
+      <svg class="abs-svg" viewBox="0 0 1920 1080" aria-hidden="true"><g data-g="box"></g></svg>
+      <p class="t box-label" style="left:960px;top:420px">AI Model</p>
+      <p class="t word g chat-hi" style="left:300px;top:420px">hi</p>
+      <p class="t word g chat-hello" style="left:1620px;top:420px">hello</p>
+      <p class="t cap fragment" data-fragment-index="1" style="top:700px">It doesn't happen automatically.<br>Computers don't understand text.</p>
+      <p class="t cap fragment" data-fragment-index="2" style="top:900px">So what do you have to do?</p>
+      <span class="fragment step" data-fragment-index="0"></span>
+    </section>
+
+    <section class="abs" data-map>
+      <svg class="abs-svg" viewBox="0 0 1920 1080" aria-hidden="true"><g data-g="arrows"></g></svg>
+      <p class="t l title-l" style="left:170px;top:170px">We map words to numbers.</p>
+      <p class="t r word" style="left:860px;top:400px">hi</p>
+      <p class="t l num" style="left:1160px;top:400px">1</p>
+      <p class="t r word" style="left:860px;top:560px">hello</p>
+      <p class="t l num" style="left:1160px;top:560px">2</p>
+      <p class="t r word" style="left:860px;top:700px">…</p>
+      <p class="t l num" style="left:1160px;top:700px">…</p>
+      <p class="t cap fragment" style="top:890px">All the words of the dictionary get a particular number.</p>
+    </section>
+
+    <section class="abs" data-pipe>
+      <svg class="abs-svg" viewBox="0 0 1920 1080" aria-hidden="true">
+        <g class="fragment" data-fragment-index="0" data-g="p1"></g>
+        <g class="fragment" data-fragment-index="1" data-g="p2"></g>
+        <g class="fragment" data-fragment-index="2" data-g="p3"></g>
+      </svg>
+      <p class="t word" style="left:220px;top:440px">hi</p>
+      <p class="t num fragment" data-fragment-index="0" style="left:560px;top:440px">1</p>
+      <p class="t box-label fragment" data-fragment-index="1" style="left:960px;top:440px">model</p>
+      <p class="t num fragment" data-fragment-index="1" style="left:1360px;top:440px">2</p>
+      <p class="t word fragment" data-fragment-index="2" style="left:1700px;top:440px">hello</p>
+      <p class="t cap fragment" data-fragment-index="2" style="top:800px">The model returns numbers,<br>and they get converted back to text.</p>
+    </section>
+
+    <section class="abs" data-you>
+      <svg class="abs-svg" viewBox="0 0 1920 1080" aria-hidden="true">
+        <g data-g="base"></g>
+        <g class="fragment" data-fragment-index="0" data-g="c1"></g>
+        <g class="fragment" data-fragment-index="1" data-g="c2"></g>
+        <g class="fragment" data-fragment-index="2" data-g="c3"></g>
+      </svg>
+      <p class="t l title-l" style="left:170px;top:130px">Same thing happens with you.</p>
+      <p class="t l head" style="left:150px;top:400px">You</p>
+      <p class="t l head" style="left:150px;top:800px">LLM</p>
+
+      <p class="t lab fragment" data-fragment-index="0" style="left:600px;top:515px">Sensory input</p>
+      <p class="t sub fragment" data-fragment-index="0" style="left:600px;top:580px">you see, you hear</p>
+      <p class="t term fragment" data-fragment-index="0" style="left:600px;top:770px">Tokenization</p>
+      <p class="t ex fragment" data-fragment-index="0" style="left:600px;top:850px">hi → 1</p>
+
+      <p class="t lab fragment" data-fragment-index="1" style="left:1080px;top:515px">Processing</p>
+      <p class="t sub fragment" data-fragment-index="1" style="left:1080px;top:580px">what you think</p>
+      <p class="t term fragment" data-fragment-index="1" style="left:1080px;top:770px">Inference</p>
+      <p class="t ex fragment" data-fragment-index="1" style="left:1080px;top:850px">1 → 2</p>
+
+      <p class="t lab fragment" data-fragment-index="2" style="left:1560px;top:515px">Output</p>
+      <p class="t sub fragment" data-fragment-index="2" style="left:1560px;top:580px">you speak, you write</p>
+      <p class="t term fragment" data-fragment-index="2" style="left:1560px;top:770px">Output</p>
+      <p class="t ex fragment" data-fragment-index="2" style="left:1560px;top:850px">2 → hello</p>
+
+      <p class="t cap fragment" data-fragment-index="3" style="top:975px">Very similar to human minds.</p>
+    </section>
+
+    <section class="abs" data-think>
+      <svg class="abs-svg" viewBox="0 0 1920 1080" aria-hidden="true">
+        <g data-g="people"></g>
+        <g class="fragment" data-fragment-index="0" data-g="mind"></g>
+        <g class="fragment" data-fragment-index="1" data-g="words"></g>
+      </svg>
+      <p class="t l title-l" style="left:170px;top:110px">We can't transfer our thoughts.</p>
+      <p class="t qmark" style="left:1310px;top:330px">?</p>
+      <p class="t sub fragment" data-fragment-index="0" style="left:960px;top:215px">internal state (mind reading)</p>
+      <p class="t word-lab fragment" data-fragment-index="1" style="left:960px;top:700px">words</p>
+      <p class="t cap2 fragment" data-fragment-index="2" style="left:960px;top:1010px">Thinking is an internal state. We can only share it as output: words.</p>
+    </section>
+
+    <section class="abs" data-models>
+      <svg class="abs-svg" viewBox="0 0 1920 1080" aria-hidden="true">
+        <g data-g="boxes"></g>
+        <g class="fragment" data-fragment-index="0" data-g="copy"></g>
+      </svg>
+      <p class="t l title-l" style="left:170px;top:110px">But models can.</p>
+      <p class="t grid" style="left:490px;top:470px">0.12   -1.30   0.88<br>-0.41   2.07   -0.95<br>1.63   -0.27   0.54<br>-2.11   0.73   1.29</p>
+      <p class="t grid fragment" data-fragment-index="0" style="left:1430px;top:470px">0.12   -1.30   0.88<br>-0.41   2.07   -0.95<br>1.63   -0.27   0.54<br>-2.11   0.73   1.29</p>
+      <p class="t lab" style="left:490px;top:700px">Model A</p>
+      <p class="t lab" style="left:1430px;top:700px">Model B</p>
+      <p class="t sub fragment" data-fragment-index="0" style="left:960px;top:395px">internal state,<br>copied as is</p>
+      <p class="t cap fragment" data-fragment-index="1" style="top:840px">That's what we call a frozen state.</p>
+      <p class="t note fragment" data-fragment-index="2" style="left:960px;top:975px">A research area to look into: KV-cache sharing, Cache-to-Cache (C2C) between LLMs</p>
+    </section>
+
+    <section class="video-slide">
+      <video class="tweet-video" src="assets/neurons.mp4" data-autoplay controls playsinline preload="auto"></video>
+    </section>
+
+    <section class="abs" data-window>
+      <svg class="abs-svg" viewBox="0 0 1920 1080" aria-hidden="true">
+        <g fill="none" stroke="#f3efe7" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+          <path class="w-outline"/>
+          <g class="w-folds"></g>
+        </g>
+        <g class="w-four"></g>
+        <g class="w-grid"></g>
+      </svg>
+      <p class="t l title-l" style="left:170px;top:110px">But this brain has a limitation.</p>
+      <p class="t box-label w-model" style="left:960px;top:330px">AI Model</p>
+      <p class="t slot w-word" style="left:525px;top:650px">plan</p>
+      <p class="t slot w-word" style="left:815px;top:650px">a</p>
+      <p class="t slot w-word" style="left:1105px;top:650px">date</p>
+      <p class="t slot w-talk" style="left:1105px;top:650px">talk</p>
+      <p class="t slot w-word" style="left:1395px;top:650px">tonight</p>
+      <p class="t ex w-l4w" style="left:960px;top:770px">4 words, at max</p>
+      <p class="t ex w-l4t" style="left:960px;top:770px">4 tokens</p>
+      <p class="t ex w-l1m" style="left:960px;top:800px">1M tokens</p>
+      <p class="t cap w-cap" style="top:890px">That window is the context window.</p>
+      <p class="t cap w-cap" style="top:890px">In the AI world, words are tokens.</p>
+      <p class="t cap w-cap" style="top:905px">AI can hold 1M tokens right now.</p>
+      <span class="fragment step" data-fragment-index="0"></span>
+      <span class="fragment step" data-fragment-index="1"></span>
+      <span class="fragment step" data-fragment-index="2"></span>
+    </section>
+
+    <section class="abs" data-game>
+      <svg class="abs-svg" viewBox="0 0 1920 1080" aria-hidden="true"><g data-g="m"></g></svg>
+      <p class="t ex ctx-lab" style="left:960px;top:160px">Context length</p>
+      <p class="t box-label" style="left:960px;top:410px">AI Model</p>
+      <p class="t game fragment" style="left:960px;top:820px">The game in AI is about <span class="hl">context engineering</span>.</p>
+    </section>
+
+    <section>
+      <h2 class="statement">Let's start entering the real game.</h2>
+    </section>
+
+    <section>
+      <h2 class="statement">There are three LAWS in AI.</h2>
+    </section>
+
+    <section>
+      <h2 class="law-title">1. The Law of the Dumb Zone Effect</h2>
+      <p class="law-body">AI models have an optimal context window. Providing too much information (crossing the threshold, often around 96k tokens) can cause the AI's performance to degrade, pushing it into a “garbage zone” where it becomes less effective.</p>
+    </section>
+
+    <section>
+      <h2 class="law-title">2. The Clustering Law</h2>
+      <p class="law-body">AI models process information by triggering specific parts of their “brain” or internal clusters. Giving too many instructions or rules at once triggers too many clusters, leading to scattered, non-deterministic outputs. It is better to prompt in a sequential, focused manner.</p>
+    </section>
+
+    <section>
+      <h2 class="law-title">3. U-Shaped Attention</h2>
+      <p class="law-body">Models tend to prioritize the first and last tokens in the context window, while often losing focus on information in the middle. To optimize results, place system prompts at the end and keep your critical instructions at the very beginning of the query.</p>
+    </section>
+
+    <section class="abs" data-body>
+      <svg class="abs-svg" viewBox="0 0 1920 1080" aria-hidden="true">
+        <g data-g="core"></g>
+        <g class="fragment" data-fragment-index="0" data-g="b1"></g>
+        <g class="fragment" data-fragment-index="1" data-g="b2"></g>
+        <g class="fragment" data-fragment-index="2" data-g="b3"></g>
+        <g class="fragment" data-fragment-index="3" data-g="b4"></g>
+      </svg>
+      <p class="t l title-l" style="left:170px;top:110px">People gave the AI model a body.</p>
+      <p class="t box-label" style="left:960px;top:560px">AI Model</p>
+      <p class="t part fragment" data-fragment-index="0" style="left:380px;top:560px">Memory</p>
+      <p class="t part fragment" data-fragment-index="1" style="left:1540px;top:560px">Tools</p>
+      <p class="t part fragment" data-fragment-index="2" style="left:960px;top:300px">MCPs</p>
+      <p class="t part fragment" data-fragment-index="3" style="left:960px;top:830px">Skills</p>
+    </section>
+
+    <section>
+      <h2 class="statement">And we started calling them AI Agents.</h2>
+    </section>
+
+  </div>
 </div>
-<div class="hint" id="hint">→ / Space next · ← back · F fullscreen</div>
-
+<script src="vendor/reveal/reveal.js"></script>
+<script src="vendor/reveal/plugin/notes.js"></script>
+<script src="vendor/gsap/gsap.min.js"></script>
+<script src="vendor/gsap/MorphSVGPlugin.min.js"></script>
+<script src="vendor/gsap/DrawSVGPlugin.min.js"></script>
+<script src="vendor/rough/rough.js"></script>
 <script>
+Reveal.initialize({
+  width: 1920, height: 1080, margin: 0.04,
+  hash: true, controls: true, progress: true, slideNumber: 'c/t',
+  center: true, transition: 'fade', plugins: [RevealNotes]
+});
+
+// Brain → box → bigger box → "LLMs". One keypress per step (reveal fragments), driven by one GSAP timeline.
 (() => {
-  const stage = document.getElementById('stage');
-  const slides = [...document.querySelectorAll('.slide')];
-  let s = 0, st = 0, first = true;
+  gsap.registerPlugin(MorphSVGPlugin, DrawSVGPlugin);
+  const slide = document.querySelector('[data-brain]');
+  const outline = slide.querySelector('.b-outline');
+  const detail = slide.querySelector('.b-detail');
+  const caps = [...slide.querySelectorAll('.cap')];
+  const CX = 960, CY = 400;
 
-  const parse = () => {
-    const m = location.hash.match(/^#(\d+)(?:\.(\d+))?$/);
-    if (!m) return;
-    s = Math.min(Math.max(+m[1] - 1, 0), slides.length - 1);
-    st = Math.min(+(m[2] || 0), +slides[s].dataset.steps || 0);
+  // Brain outline: bumps ("gyri") laid along a side-view brain silhouette, facing left.
+  const base = [[-290, 30], [-285, -70], [-230, -160], [-140, -215], [-30, -235], [80, -225], [180, -190], [255, -120],
+                [290, -30], [275, 60], [220, 115], [120, 140], [10, 150], [-100, 145], [-200, 120], [-265, 85]];
+  const P = ([x, y]) => [CX + x, CY + y];
+  let d = '';
+  base.forEach((p, i) => {
+    const a = P(p), b = P(base[(i + 1) % base.length]);
+    const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
+    const vx = mx - CX, vy = my - (CY - 20), len = Math.hypot(vx, vy), seg = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    const bump = seg * (i % 2 ? 0.34 : 0.28);
+    const c = [mx + (vx / len) * bump, my + (vy / len) * bump];
+    d += (i ? '' : `M${a[0]},${a[1]} `) + `Q${c[0].toFixed(1)},${c[1].toFixed(1)} ${b[0]},${b[1]} `;
+  });
+  outline.setAttribute('d', d + 'Z');
+
+  const rel = s => s.replace(/(-?\d+),(-?\d+)/g, (_, x, y) => `${CX + +x},${CY + +y}`);
+  const folds = [
+    'M40,-232 C10,-190 60,-160 30,-120 C0,-80 40,-60 10,-20',
+    'M-215,70 C-150,40 -60,60 0,30 C40,10 90,10 130,-35',
+    'M-235,-85 C-215,-115 -185,-115 -175,-85 C-165,-55 -135,-55 -120,-85',
+    'M-175,-160 C-155,-185 -125,-185 -110,-160 C-95,-135 -65,-140 -55,-165',
+    'M-170,0 C-150,25 -120,25 -105,0 C-90,-25 -60,-25 -45,0',
+    'M100,-175 C120,-145 150,-145 165,-170 C180,-195 210,-190 220,-165',
+    'M130,-85 C150,-60 180,-60 195,-85 C210,-110 240,-105 250,-80',
+    'M-140,105 C-115,85 -85,85 -65,105 C-45,125 -15,120 0,100',
+    'M195,20 C210,-5 235,-5 250,15',
+    // cerebellum and brain stem
+    'M150,150 C150,205 230,215 270,170 C285,150 265,120 240,118',
+    'M170,165 C200,180 235,178 255,160',
+    'M60,152 C65,200 70,235 60,280',
+    'M120,155 C118,200 125,240 118,280'
+  ];
+  for (const f of folds) {
+    const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    p.setAttribute('d', rel(f));
+    detail.appendChild(p);
+  }
+  const parts = [outline, ...detail.children];
+
+  const box = (w, h, r) => {
+    const x = CX - w / 2, y = CY - h / 2;
+    return `M${x + r},${y} H${x + w - r} Q${x + w},${y} ${x + w},${y + r} V${y + h - r} Q${x + w},${y + h} ${x + w - r},${y + h} H${x + r} Q${x},${y + h} ${x},${y + h - r} V${y + r} Q${x},${y} ${x + r},${y} Z`;
   };
 
-  const render = () => {
-    slides.forEach((el, i) => el.classList.toggle('active', i === s));
-    const el = slides[s];
-    el.querySelectorAll('[data-step]').forEach(n => n.classList.toggle('on', st >= +n.dataset.step));
-    el.querySelectorAll('[data-hide]').forEach(n => n.classList.toggle('off', st >= +n.dataset.hide));
-    el.dispatchEvent(new CustomEvent('step', { detail: { step: st, instant: first } }));
-    history.replaceState(null, '', `#${s + 1}.${st}`);
-    first = false;
-  };
+  const show = el => ({ autoAlpha: 1, duration: 0.35 });
+  gsap.set(caps, { autoAlpha: 0 });
+  const tl = gsap.timeline({ paused: true })
+    .addLabel('start')
+    .fromTo(parts, { drawSVG: '0%' }, { drawSVG: '100%', duration: 1.3, stagger: 0.06, ease: 'power1.inOut' })
+    .to(caps[0], show(), '-=0.3')
+    .addLabel('s0')
+    .to(caps[0], { autoAlpha: 0, duration: 0.25 })
+    .to(detail, { autoAlpha: 0, duration: 0.4 }, '<')
+    .to(outline, { morphSVG: box(420, 320, 28), duration: 1.1, ease: 'power2.inOut' }, '<')
+    .to(caps[1], show(), '-=0.25')
+    .addLabel('s1')
+    .to(caps[1], { autoAlpha: 0, duration: 0.25 })
+    .to(outline, { morphSVG: box(1100, 560, 34), duration: 0.9, ease: 'power2.inOut' }, '<')
+    .to(caps[2], show(), '-=0.2')
+    .addLabel('s2')
+    .to(caps[2], { autoAlpha: 0, duration: 0.25 })
+    .to(caps[3], show())
+    .addLabel('s3');
 
-  const last = i => +slides[i].dataset.steps || 0;
-  const next = () => { if (st < last(s)) st++; else if (s < slides.length - 1) { s++; st = 0; } render(); };
-  const prev = () => { if (st > 0) st--; else if (s > 0) { s--; st = last(s); } render(); };
+  const labels = ['s0', 's1', 's2', 's3'];
+  const state = () => (Reveal.getIndices().f ?? -1) + 1;
+  const here = () => Reveal.getCurrentSlide() === slide;
 
-  const fit = () => {
-    const k = Math.min(innerWidth / 1920, innerHeight / 1080);
-    stage.style.transform = `translate(${(innerWidth - 1920 * k) / 2}px,${(innerHeight - 1080 * k) / 2}px) scale(${k})`;
-  };
+  Reveal.on('slidechanged', e => {
+    if (e.currentSlide !== slide) return;
+    const st = state();
+    if (st === 0) { tl.seek('start'); tl.tweenTo('s0'); }
+    else tl.seek(labels[st]);
+  });
+  const step = () => { if (here()) tl.tweenTo(labels[state()]); };
+  Reveal.on('fragmentshown', step);
+  Reveal.on('fragmenthidden', step);
+  Reveal.on('ready', () => { if (here()) { const st = state(); st ? tl.seek(labels[st]) : tl.tweenTo('s0'); } });
+})();
 
-  addEventListener('keydown', e => {
-    if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); next(); }
-    else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); prev(); }
-    else if (e.key === 'Home') { s = 0; st = 0; render(); }
-    else if (e.key === 'f' || e.key === 'F') {
-      document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+// Hand-drawn Yes/No flowchart (Rough.js).
+(() => {
+  const svg = document.querySelector('[data-flow] .flow-svg');
+  const rc = rough.svg(svg);
+  const o = seed => ({ stroke: '#f3efe7', strokeWidth: 4, roughness: 1.2, bowing: 1.4, seed });
+  const g = name => svg.querySelector(`[data-g="${name}"]`);
+  const into = (grp, n) => grp.appendChild(n);
+  into(g('q'), rc.polygon([[960, 90], [1360, 280], [960, 470], [560, 280]], o(3)));
+  into(g('yes'), rc.rectangle(170, 640, 620, 220, o(5)));
+  into(g('no'), rc.rectangle(1130, 640, 620, 220, o(7)));
+  const arrow = (grp, x1, y1, cx, cy, x2, y2, seed) => {
+    into(grp, rc.curve([[x1, y1], [cx, cy], [x2, y2]], o(seed)));
+    const a = Math.atan2(y2 - cy, x2 - cx);
+    for (const s of [-1, 1]) {
+      const t = a + Math.PI + s * 0.45;
+      into(grp, rc.line(x2, y2, x2 + 32 * Math.cos(t), y2 + 32 * Math.sin(t), o(seed + 10 + s)));
     }
-  });
-  stage.addEventListener('click', next);
-  addEventListener('resize', fit);
-
-  /* Slide 1 signature: the cry flips DORAEMONNNN! -> CHATGPTTTT! like a split-flap board */
-  const cry = document.getElementById('cry');
-  const CRY = ['DORAEMONNNN!', 'CHATGPTTTT!'];
-  const GLYPHS = 'ABCDEFGHIJKLMNOPRSTUVWXYZ';
-  let cryIdx = 0, timer;
-  const paint = t => { cry.innerHTML = [...t].map(c => `<span class="ch">${c}</span>`).join(''); };
-  const morph = (to, instant) => {
-    clearInterval(timer);
-    cry.setAttribute('aria-label', to);
-    if (instant || matchMedia('(prefers-reduced-motion: reduce)').matches) return paint(to);
-    const from = cry.textContent, n = Math.max(from.length, to.length), t0 = performance.now();
-    timer = setInterval(() => {
-      const t = performance.now() - t0;
-      let out = '', done = true;
-      for (let i = 0; i < n; i++) {
-        if (t >= 160 + i * 60) out += to[i] || '';
-        else { done = false; out += GLYPHS[(Math.random() * GLYPHS.length) | 0]; }
-      }
-      paint(out);
-      if (done) {
-        clearInterval(timer); paint(to);
-        cry.classList.remove('thud'); void cry.offsetWidth; cry.classList.add('thud');
-      }
-    }, 42);
   };
-  paint(CRY[0]);
-  slides[0].addEventListener('step', e => {
-    const want = e.detail.step >= 2 ? 1 : 0;
-    if (want !== cryIdx) { cryIdx = want; morph(CRY[want], e.detail.instant); }
-  });
+  arrow(g('yes'), 560, 280, 430, 400, 480, 625, 11);
+  arrow(g('no'), 1360, 280, 1490, 400, 1440, 625, 21);
+})();
 
-  parse(); fit(); render();
-  setTimeout(() => document.getElementById('hint').classList.add('hide'), 3500);
+// Tokens: hi → ChatGPT → hello, word→number map, the number pipeline, and "same thing happens with you".
+(() => {
+  const O = seed => ({ stroke: '#f3efe7', strokeWidth: 4, roughness: 1.2, bowing: 1.4, seed });
+  const sketch = sel => {
+    const svg = document.querySelector(`${sel} .abs-svg`);
+    const rc = rough.svg(svg);
+    const g = n => svg.querySelector(`[data-g="${n}"]`);
+    const arrow = (grp, x1, y1, x2, y2, seed, bend = 18) => {
+      const cx = (x1 + x2) / 2, cy = (y1 + y2) / 2 - bend;
+      grp.appendChild(rc.curve([[x1, y1], [cx, cy], [x2, y2]], O(seed)));
+      const a = Math.atan2(y2 - cy, x2 - cx);
+      for (const s of [-1, 1]) {
+        const t = a + Math.PI + s * 0.45;
+        grp.appendChild(rc.line(x2, y2, x2 + 30 * Math.cos(t), y2 + 30 * Math.sin(t), O(seed + 10 + s)));
+      }
+    };
+    return { rc, g, arrow };
+  };
+
+  // hi → ChatGPT → hello
+  const chat = document.querySelector('[data-chat]');
+  const c = sketch('[data-chat]');
+  c.g('box').appendChild(c.rc.rectangle(700, 270, 520, 300, O(31)));
+  const hi = chat.querySelector('.chat-hi'), hello = chat.querySelector('.chat-hello');
+  gsap.set([hi, hello], { xPercent: -50, yPercent: -50 });
+  gsap.set(hello, { autoAlpha: 0, x: -660, scale: 0.4 });
+  const tl = gsap.timeline({ paused: true })
+    .to(hi, { x: 660, scale: 0.4, autoAlpha: 0, duration: 0.9, ease: 'power2.in' })
+    .to(c.g('box'), { scale: 1.04, transformOrigin: '50% 50%', duration: 0.12, yoyo: true, repeat: 3 })
+    .to(hello, { x: 0, scale: 1, autoAlpha: 1, duration: 0.9, ease: 'power2.out' });
+  const chatSync = jump => {
+    if (Reveal.getCurrentSlide() !== chat) return;
+    const on = (Reveal.getIndices().f ?? -1) >= 0;
+    if (jump) tl.progress(on ? 1 : 0).pause();
+    else if (on) { if (tl.progress() < 1) tl.play(); }
+    else tl.reverse();
+  };
+  Reveal.on('slidechanged', () => chatSync(true));
+  Reveal.on('ready', () => chatSync(true));
+  Reveal.on('fragmentshown', () => chatSync(false));
+  Reveal.on('fragmenthidden', () => chatSync(false));
+
+  // hi → 1, hello → 2, …
+  const m = sketch('[data-map]');
+  m.arrow(m.g('arrows'), 900, 400, 1120, 400, 41);
+  m.arrow(m.g('arrows'), 900, 560, 1120, 560, 51);
+  m.arrow(m.g('arrows'), 900, 700, 1120, 700, 61);
+
+  // hi → 1 → model → 2 → hello
+  const p = sketch('[data-pipe]');
+  p.arrow(p.g('p1'), 300, 440, 500, 440, 71);
+  p.arrow(p.g('p2'), 610, 440, 740, 440, 81);
+  p.g('p2').appendChild(p.rc.rectangle(760, 330, 400, 220, O(91)));
+  p.arrow(p.g('p2'), 1180, 440, 1300, 440, 101);
+  p.arrow(p.g('p3'), 1420, 440, 1580, 440, 111);
+
+  // You ↔ LLM, with doodles: eye + ear → brain → mouth
+  const y = sketch('[data-you]');
+  const doodle = (grp, d, seed, extra = {}) => grp.appendChild(y.rc.path(d, { ...O(seed), roughness: 0.9, ...extra }));
+  y.g('base').appendChild(y.rc.line(320, 665, 1800, 665, { ...O(150), strokeWidth: 2, stroke: '#5b5750' }));
+
+  const c1 = y.g('c1');
+  doodle(c1, 'M440,360 Q530,295 620,360 Q530,425 440,360 Z', 151);
+  c1.appendChild(y.rc.circle(530, 360, 70, O(152)));
+  c1.appendChild(y.rc.circle(530, 360, 26, { ...O(153), fill: '#f3efe7', fillStyle: 'solid' }));
+  doodle(c1, 'M680,300 C730,295 750,335 742,368 C735,395 712,402 708,425 C704,448 680,452 668,436', 154);
+  doodle(c1, 'M694,332 C714,334 718,356 704,370', 155);
+
+  const c2 = y.g('c2'), bx = 1080, by = 360, s = 0.42;
+  y.arrow(c2, 790, 360, 930, 360, 161, 10);
+  const base = [[-290, 30], [-285, -70], [-230, -160], [-140, -215], [-30, -235], [80, -225], [180, -190], [255, -120],
+                [290, -30], [275, 60], [220, 115], [120, 140], [10, 150], [-100, 145], [-200, 120], [-265, 85]];
+  let bd = '';
+  base.forEach((pt, i) => {
+    const nb = base[(i + 1) % base.length];
+    const a = [bx + pt[0] * s, by + pt[1] * s], b = [bx + nb[0] * s, by + nb[1] * s];
+    const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, vx = mx - bx, vy = my - (by - 8);
+    const len = Math.hypot(vx, vy), bump = Math.hypot(b[0] - a[0], b[1] - a[1]) * (i % 2 ? 0.34 : 0.28);
+    bd += (i ? '' : `M${a[0]},${a[1]} `) + `Q${(mx + vx / len * bump).toFixed(1)},${(my + vy / len * bump).toFixed(1)} ${b[0]},${b[1]} `;
+  });
+  doodle(c2, bd + 'Z', 162, { roughness: 0.6 });
+  ['M40,-232 C10,-190 60,-160 30,-120 C0,-80 40,-60 10,-20',
+   'M-215,70 C-150,40 -60,60 0,30 C40,10 90,10 130,-35',
+   'M-175,-160 C-155,-185 -125,-185 -110,-160 C-95,-135 -65,-140 -55,-165',
+   'M130,-85 C150,-60 180,-60 195,-85 C210,-110 240,-105 250,-80',
+   'M60,152 C65,200 70,235 60,280',
+   'M120,155 C118,200 125,240 118,280'
+  ].forEach((f, i) => doodle(c2, f.replace(/(-?\d+),(-?\d+)/g, (_, X, Y) => `${(bx + X * s).toFixed(1)},${(by + Y * s).toFixed(1)}`), 163 + i, { roughness: 0.5 }));
+
+  const c3 = y.g('c3');
+  y.arrow(c3, 1240, 360, 1390, 360, 171, 10);
+  doodle(c3, 'M1450,365 Q1530,325 1610,365 Q1530,420 1450,365 Z', 181);
+  doodle(c3, 'M1450,365 Q1530,378 1610,365', 182);
+  doodle(c3, 'M1640,340 Q1656,365 1640,390', 183);
+  doodle(c3, 'M1665,320 Q1690,365 1665,410', 184);
+  doodle(c3, 'M1690,300 Q1724,365 1690,430', 185);
+})();
+
+// "We can't transfer our thoughts" (two people) and "But models can" (internal state copied).
+(() => {
+  const O = (seed, x = {}) => ({ stroke: '#f3efe7', strokeWidth: 4, roughness: 1.1, bowing: 1.3, seed, ...x });
+  const RED = '#ff6f61', YEL = '#ffd45c';
+  const kit = sel => {
+    const svg = document.querySelector(`${sel} .abs-svg`);
+    return { rc: rough.svg(svg), g: n => svg.querySelector(`[data-g="${n}"]`) };
+  };
+  const cloud = (cx, cy, rx, ry, n = 11) => {
+    let d = '';
+    for (let i = 0; i < n; i++) {
+      const a0 = (i / n) * 2 * Math.PI, a1 = ((i + 1) / n) * 2 * Math.PI, am = (a0 + a1) / 2;
+      const p0 = [cx + rx * Math.cos(a0), cy + ry * Math.sin(a0)], p1 = [cx + rx * Math.cos(a1), cy + ry * Math.sin(a1)];
+      const c = [cx + rx * 1.32 * Math.cos(am), cy + ry * 1.32 * Math.sin(am)];
+      d += (i ? '' : `M${p0[0].toFixed(1)},${p0[1].toFixed(1)} `) + `Q${c[0].toFixed(1)},${c[1].toFixed(1)} ${p1[0].toFixed(1)},${p1[1].toFixed(1)} `;
+    }
+    return d + 'Z';
+  };
+  const head = (rc, grp, x1, y1, x2, y2, seed) => {
+    const a = Math.atan2(y2 - y1, x2 - x1);
+    for (const s of [-1, 1]) {
+      const t = a + Math.PI + s * 0.45;
+      grp.appendChild(rc.line(x2, y2, x2 + 30 * Math.cos(t), y2 + 30 * Math.sin(t), O(seed + s)));
+    }
+  };
+  const person = (rc, grp, x, seed) => {
+    grp.appendChild(rc.circle(x, 560, 150, O(seed)));
+    grp.appendChild(rc.line(x, 635, x, 820, O(seed + 1)));
+    grp.appendChild(rc.line(x, 690, x - 80, 770, O(seed + 2)));
+    grp.appendChild(rc.line(x, 690, x + 80, 770, O(seed + 3)));
+    grp.appendChild(rc.line(x, 820, x - 55, 950, O(seed + 4)));
+    grp.appendChild(rc.line(x, 820, x + 55, 950, O(seed + 5)));
+  };
+
+  const t = kit('[data-think]');
+  const people = t.g('people');
+  person(t.rc, people, 430, 201);
+  person(t.rc, people, 1490, 211);
+  people.appendChild(t.rc.circle(480, 470, 18, O(221)));
+  people.appendChild(t.rc.circle(512, 432, 28, O(222)));
+  people.appendChild(t.rc.path(cloud(610, 330, 150, 80), O(223)));
+  people.appendChild(t.rc.circle(1440, 470, 18, O(224)));
+  people.appendChild(t.rc.circle(1408, 432, 28, O(225)));
+  people.appendChild(t.rc.path(cloud(1310, 330, 150, 80), O(226)));
+  let sp = '';
+  for (let k = 0; k <= 120; k++) {
+    const a = k * 0.16, r = 4 + k * 0.46;
+    sp += `${k ? 'L' : 'M'}${(610 + r * Math.cos(a)).toFixed(1)},${(330 + r * Math.sin(a) * 0.62).toFixed(1)} `;
+  }
+  people.appendChild(t.rc.path(sp, O(227, { stroke: YEL, strokeWidth: 3, roughness: 0.6 })));
+
+  const mind = t.g('mind');
+  mind.appendChild(t.rc.curve([[795, 320], [960, 255], [1125, 320]], O(231, { strokeLineDash: [14, 12] })));
+  mind.appendChild(t.rc.line(925, 252, 995, 322, O(232, { stroke: RED, strokeWidth: 7 })));
+  mind.appendChild(t.rc.line(995, 252, 925, 322, O(233, { stroke: RED, strokeWidth: 7 })));
+
+  const words = t.g('words');
+  words.appendChild(t.rc.curve([[525, 600], [960, 660], [1395, 600]], O(241)));
+  head(t.rc, words, 960, 660, 1395, 600, 245);
+
+  const m = kit('[data-models]');
+  m.g('boxes').appendChild(m.rc.rectangle(220, 300, 540, 340, O(301)));
+  m.g('boxes').appendChild(m.rc.rectangle(1160, 300, 540, 340, O(302)));
+  const copy = m.g('copy');
+  copy.appendChild(m.rc.curve([[790, 480], [960, 500], [1130, 480]], O(303)));
+  head(m.rc, copy, 960, 500, 1130, 480, 306);
+})();
+
+// "This brain has a limitation": 4 words → 4 tokens → brain becomes a model → 1M tokens. One keypress per step.
+(() => {
+  const slide = document.querySelector('[data-window]');
+  const svg = slide.querySelector('.abs-svg');
+  const rc = rough.svg(svg);
+  const O = (seed, x = {}) => ({ stroke: '#f3efe7', strokeWidth: 4, roughness: 1.1, bowing: 1.3, seed, ...x });
+  const YEL = '#ffd45c';
+  const bx = 960, by = 330, s = 0.5;
+  const base = [[-290, 30], [-285, -70], [-230, -160], [-140, -215], [-30, -235], [80, -225], [180, -190], [255, -120],
+                [290, -30], [275, 60], [220, 115], [120, 140], [10, 150], [-100, 145], [-200, 120], [-265, 85]];
+  let bd = '';
+  base.forEach((pt, i) => {
+    const nb = base[(i + 1) % base.length];
+    const a = [bx + pt[0] * s, by + pt[1] * s], b = [bx + nb[0] * s, by + nb[1] * s];
+    const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, vx = mx - bx, vy = my - (by - 10);
+    const len = Math.hypot(vx, vy), bump = Math.hypot(b[0] - a[0], b[1] - a[1]) * (i % 2 ? 0.34 : 0.28);
+    bd += (i ? '' : `M${a[0]},${a[1]} `) + `Q${(mx + vx / len * bump).toFixed(1)},${(my + vy / len * bump).toFixed(1)} ${b[0]},${b[1]} `;
+  });
+  const outline = slide.querySelector('.w-outline');
+  outline.setAttribute('d', bd + 'Z');
+  const folds = slide.querySelector('.w-folds');
+  ['M40,-232 C10,-190 60,-160 30,-120 C0,-80 40,-60 10,-20',
+   'M-215,70 C-150,40 -60,60 0,30 C40,10 90,10 130,-35',
+   'M-175,-160 C-155,-185 -125,-185 -110,-160 C-95,-135 -65,-140 -55,-165',
+   'M130,-85 C150,-60 180,-60 195,-85 C210,-110 240,-105 250,-80',
+   'M60,152 C65,200 70,235 60,280',
+   'M120,155 C118,200 125,240 118,280'
+  ].forEach(f => {
+    const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    p.setAttribute('d', f.replace(/(-?\d+),(-?\d+)/g, (_, X, Y) => `${(bx + X * s).toFixed(1)},${(by + Y * s).toFixed(1)}`));
+    folds.appendChild(p);
+  });
+  const W = 380, H = 230, R = 24, x = bx - W / 2, y = by - H / 2;
+  const box = `M${x + R},${y} H${x + W - R} Q${x + W},${y} ${x + W},${y + R} V${y + H - R} Q${x + W},${y + H} ${x + W - R},${y + H} H${x + R} Q${x},${y + H} ${x},${y + H - R} V${y + R} Q${x},${y} ${x + R},${y} Z`;
+
+  // Brain: 4 slots. AI model: 100 slots (4 × 25), just to show the scale.
+  const four = slide.querySelector('.w-four'), grid = slide.querySelector('.w-grid');
+  for (let i = 0; i < 4; i++) four.appendChild(rc.rectangle(400 + i * 290, 590, 250, 120, O(431 + i)));
+  for (let r = 0; r < 4; r++) {
+    for (let c = 0; c < 25; c++) {
+      grid.appendChild(rc.rectangle(166 + c * 64, 552 + r * 52, 52, 40, O(500 + r * 25 + c, { strokeWidth: 2.5, roughness: 0.9 })));
+    }
+  }
+
+  const q = c => slide.querySelector(c);
+  const caps = [...slide.querySelectorAll('.w-cap')], words = [...slide.querySelectorAll('.w-word')];
+  const slots = [...four.children], cells = [...grid.children];
+  const l4w = q('.w-l4w'), l4t = q('.w-l4t'), l1m = q('.w-l1m'), model = q('.w-model'), talk = q('.w-talk');
+  gsap.set([...slots, ...cells, ...words, talk, l4w, l4t, l1m, model, ...caps], { autoAlpha: 0 });
+  const tl = gsap.timeline({ paused: true })
+    .addLabel('s0')
+    .to(slots, { autoAlpha: 1, duration: 0.3, stagger: 0.12 })
+    .to(words, { autoAlpha: 1, duration: 0.3, stagger: 0.12 }, '<0.15')
+    .to([l4w, caps[0]], { autoAlpha: 1, duration: 0.35 })
+    .to(words[2], { autoAlpha: 0, duration: 0.25 }, '+=2')
+    .to(talk, { autoAlpha: 1, duration: 0.3 })
+    .addLabel('s1')
+    .to([l4w, caps[0]], { autoAlpha: 0, duration: 0.25 })
+    .to([l4t, caps[1]], { autoAlpha: 1, duration: 0.35 })
+    .addLabel('s2')
+    .to([...slots, ...words, talk, l4t, caps[1]], { autoAlpha: 0, duration: 0.3 })
+    .to(folds, { autoAlpha: 0, duration: 0.35 }, '<')
+    .to(outline, { morphSVG: box, duration: 1.0, ease: 'power2.inOut' }, '<')
+    .to(model, { autoAlpha: 1, duration: 0.35 }, '-=0.2')
+    .to(cells, { autoAlpha: 1, duration: 0.25, stagger: { each: 0.012, from: 'center', grid: [4, 25] } }, '<')
+    .to([l1m, caps[2]], { autoAlpha: 1, duration: 0.35 })
+    .addLabel('s3');
+
+  const labels = ['s0', 's1', 's2', 's3'];
+  const state = () => (Reveal.getIndices().f ?? -1) + 1;
+  const here = () => Reveal.getCurrentSlide() === slide;
+  let at = 0;
+  const jump = () => { at = state(); tl.seek(labels[at]).pause(); };
+  Reveal.on('slidechanged', () => { if (here()) jump(); });
+  Reveal.on('ready', () => { if (here()) jump(); });
+  const step = () => {
+    if (!here()) return;
+    const st = state();
+    if (st > at) tl.tweenTo(labels[st]); else tl.seek(labels[st]).pause();
+    at = st;
+  };
+  Reveal.on('fragmentshown', step);
+  Reveal.on('fragmenthidden', step);
+})();
+
+// AI Model inside its context length.
+(() => {
+  const svg = document.querySelector('[data-game] .abs-svg');
+  const rc = rough.svg(svg), g = svg.querySelector('[data-g="m"]');
+  const O = (seed, x = {}) => ({ stroke: '#f3efe7', strokeWidth: 4, roughness: 1.1, bowing: 1.3, seed, ...x });
+  g.appendChild(rc.rectangle(710, 300, 500, 220, O(601)));
+  g.appendChild(rc.rectangle(380, 200, 1160, 420, O(602, { stroke: '#ffd45c', strokeLineDash: [16, 12] })));
+})();
+
+// The AI model gets a body: memory, tools, MCPs, skills (one keypress each).
+(() => {
+  const svg = document.querySelector('[data-body] .abs-svg');
+  const rc = rough.svg(svg), g = n => svg.querySelector(`[data-g="${n}"]`);
+  const O = (seed, x = {}) => ({ stroke: '#f3efe7', strokeWidth: 4, roughness: 1.1, bowing: 1.3, seed, ...x });
+  const YEL = '#ffd45c';
+  g('core').appendChild(rc.rectangle(740, 450, 440, 220, O(701)));
+  const part = (grp, x, y, w, h, lx1, ly1, lx2, ly2, seed) => {
+    grp.appendChild(rc.rectangle(x - w / 2, y - h / 2, w, h, O(seed, { stroke: YEL })));
+    grp.appendChild(rc.line(lx1, ly1, lx2, ly2, O(seed + 1, { stroke: YEL })));
+  };
+  part(g('b1'), 380, 560, 320, 130, 540, 560, 740, 560, 711);
+  part(g('b2'), 1540, 560, 300, 130, 1180, 560, 1390, 560, 721);
+  part(g('b3'), 960, 300, 280, 120, 960, 360, 960, 450, 731);
+  part(g('b4'), 960, 830, 280, 120, 960, 670, 960, 770, 741);
 })();
 </script>
 </body>
