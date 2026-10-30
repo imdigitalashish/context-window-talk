@@ -83,6 +83,11 @@
 .reveal h2.law-title { font-size: 110px; margin: 0 0 56px; }
 .reveal .law-body { font-size: 62px; font-weight: 600; line-height: 1.22; max-width: 1580px; margin: 0; }
 .reveal .t.part { font-size: 72px; }
+.reveal .t.axis { font-size: 48px; font-weight: 600; color: #a8a398; }
+.reveal .t.yaxis { transform: translate(-50%, -50%) rotate(-90deg); }
+.reveal .t.zone { font-size: 52px; }
+.reveal .t.ann { font-size: 58px; }
+.reveal .t.ann-s { font-size: 48px; }
 .reveal .dim { position: absolute; background: rgba(10, 10, 10, 0.8); }
 .reveal .abs .step { display: none; }
 </style>
@@ -290,9 +295,33 @@
       <h2 class="statement">There are three LAWS in AI.</h2>
     </section>
 
-    <section>
-      <h2 class="law-title">1. The Law of the Dumb Zone Effect</h2>
-      <p class="law-body">AI models have an optimal context window. Providing too much information (crossing the threshold, often around 96k tokens) can cause the AI's performance to degrade, pushing it into a “garbage zone” where it becomes less effective.</p>
+    <section class="abs" data-dz>
+      <svg class="abs-svg" viewBox="0 0 1920 1080" aria-hidden="true">
+        <g class="dz-axes"></g>
+        <g class="dz-zone dz-smart" opacity="0.3"></g>
+        <g class="dz-zone dz-dumb" opacity="0.3"></g>
+        <g class="dz-zone dz-garbage" opacity="0.3"></g>
+        <g class="dz-thr"></g>
+        <g fill="none" stroke="#f3efe7" stroke-width="7" stroke-linecap="round">
+          <path class="dz-seg" d="M240,330 C420,318 700,322 900,345"/>
+          <path class="dz-seg" d="M900,345 C1030,365 1180,470 1350,600"/>
+          <path class="dz-seg" d="M1350,600 C1480,690 1620,745 1760,770"/>
+        </g>
+      </svg>
+      <p class="t l title-l" style="left:170px;top:110px">1. The Law of the Dumb Zone Effect</p>
+      <p class="t axis" style="left:1000px;top:885px">tokens in the context →</p>
+      <p class="t axis yaxis" style="left:175px;top:540px">how smart it is</p>
+      <p class="t zone dz-l1" style="left:570px;top:785px;color:#6fcf97">smart zone</p>
+      <p class="t ann dz-l1" style="left:570px;top:430px">optimal context window</p>
+      <p class="t ann-s dz-l2" style="left:900px;top:240px;color:#ffd45c">crossing the threshold (~96K tokens)</p>
+      <p class="t zone dz-l3" style="left:1125px;top:785px;color:#ffd45c">dumb zone</p>
+      <p class="t ann dz-l3" style="left:1235px;top:420px">performance degrades</p>
+      <p class="t zone dz-l4" style="left:1565px;top:785px;color:#ff6f61">garbage zone</p>
+      <p class="t ann dz-l4" style="left:1565px;top:560px;color:#ff6f61">less effective</p>
+      <span class="fragment step" data-fragment-index="0"></span>
+      <span class="fragment step" data-fragment-index="1"></span>
+      <span class="fragment step" data-fragment-index="2"></span>
+      <span class="fragment step" data-fragment-index="3"></span>
     </section>
 
     <section>
@@ -726,6 +755,68 @@ Reveal.initialize({
   part(g('b2'), 1540, 560, 300, 130, 1180, 560, 1390, 560, 721);
   part(g('b3'), 960, 300, 280, 120, 960, 360, 960, 450, 731);
   part(g('b4'), 960, 830, 280, 120, 960, 670, 960, 770, 741);
+})();
+
+// Law 1, the dumb zone: a hand-drawn quality-vs-tokens chart that builds one keypress at a time.
+(() => {
+  const slide = document.querySelector('[data-dz]');
+  const svg = slide.querySelector('.abs-svg');
+  const rc = rough.svg(svg);
+  const q = c => slide.querySelector(c), qa = c => [...slide.querySelectorAll(c)];
+  const O = (seed, x = {}) => ({ stroke: '#f3efe7', strokeWidth: 4, roughness: 1, bowing: 1.2, seed, ...x });
+  const GREEN = '#6fcf97', YEL = '#ffd45c', RED = '#ff6f61';
+  const axes = q('.dz-axes');
+  axes.appendChild(rc.line(240, 820, 240, 250, O(801)));
+  axes.appendChild(rc.line(240, 820, 1785, 820, O(802)));
+  [[240, 250, -Math.PI / 2], [1785, 820, 0]].forEach(([x, y, a], i) => {
+    for (const s of [-1, 1]) {
+      const t = a + Math.PI + s * 0.45;
+      axes.appendChild(rc.line(x, y, x + 26 * Math.cos(t), y + 26 * Math.sin(t), O(803 + i * 2 + s)));
+    }
+  });
+  const hatch = (sel, x, w, color, seed) => q(sel).appendChild(rc.rectangle(x, 262, w, 556,
+    { stroke: 'none', fill: color, fillStyle: 'hachure', hachureGap: 16, fillWeight: 2.5, roughness: 1, seed }));
+  hatch('.dz-smart', 244, 656, GREEN, 811);
+  hatch('.dz-dumb', 900, 450, YEL, 812);
+  hatch('.dz-garbage', 1350, 432, RED, 813);
+  q('.dz-thr').appendChild(rc.line(900, 818, 900, 268, O(814, { stroke: YEL, strokeWidth: 3, strokeLineDash: [14, 12] })));
+
+  const seg = qa('.dz-seg');
+  const [l1, l2, l3, l4] = [qa('.dz-l1'), qa('.dz-l2'), qa('.dz-l3'), qa('.dz-l4')];
+  gsap.set([q('.dz-smart'), q('.dz-dumb'), q('.dz-garbage'), q('.dz-thr'), ...l1, ...l2, ...l3, ...l4], { autoAlpha: 0 });
+  gsap.set(seg, { drawSVG: '0%' });
+  const tl = gsap.timeline({ paused: true })
+    .addLabel('s0')
+    .to(q('.dz-smart'), { autoAlpha: 0.3, duration: 0.4 })
+    .to(seg[0], { drawSVG: '100%', duration: 1.1, ease: 'power1.inOut' }, '<')
+    .to(l1, { autoAlpha: 1, duration: 0.35 })
+    .addLabel('s1')
+    .to([q('.dz-thr'), ...l2], { autoAlpha: 1, duration: 0.4 })
+    .addLabel('s2')
+    .to(q('.dz-dumb'), { autoAlpha: 0.3, duration: 0.4 })
+    .to(seg[1], { drawSVG: '100%', duration: 1.0, ease: 'power1.in' }, '<')
+    .to(l3, { autoAlpha: 1, duration: 0.35 })
+    .addLabel('s3')
+    .to(q('.dz-garbage'), { autoAlpha: 0.3, duration: 0.4 })
+    .to(seg[2], { drawSVG: '100%', duration: 0.9, ease: 'power1.out' }, '<')
+    .to(l4, { autoAlpha: 1, duration: 0.35 })
+    .addLabel('s4');
+
+  const labels = ['s0', 's1', 's2', 's3', 's4'];
+  const state = () => (Reveal.getIndices().f ?? -1) + 1;
+  const here = () => Reveal.getCurrentSlide() === slide;
+  let at = 0;
+  const jump = () => { at = state(); tl.seek(labels[at]).pause(); };
+  Reveal.on('slidechanged', () => { if (here()) jump(); });
+  Reveal.on('ready', () => { if (here()) jump(); });
+  const step = () => {
+    if (!here()) return;
+    const st = state();
+    if (st > at) tl.tweenTo(labels[st]); else tl.seek(labels[st]).pause();
+    at = st;
+  };
+  Reveal.on('fragmentshown', step);
+  Reveal.on('fragmenthidden', step);
 })();
 </script>
 </body>
